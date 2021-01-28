@@ -1,26 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import './App.scss'
+import {createStore, applyMiddleware} from 'redux'
+import {Provider} from 'react-redux'
+import {rootReduser} from './redusers'
+import thunk from 'redux-thunk'
+import {NavigatorContext} from './navigation'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const store = createStore(rootReduser, applyMiddleware(thunk))
+
+const App = () => {
+  const {loding, table, tempChart, humChart} = React.useContext(NavigatorContext)
+  return <Provider store={store}>
+    <nav></nav>
+    <main>
+      {loding ? 'loadavgPahe' : null}
+      {table ? 'tablePahe' : null}
+      {tempChart ? 'tempChartPahe' : null}
+      {humChart ? 'HumChartPahe' : null}
+    </main>
+
+  </Provider>
 }
 
 export default App;
+
