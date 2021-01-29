@@ -20,7 +20,7 @@ type Action =
 
 const initState = {
   visible: true,
-  progres: 100,
+  progres: 75,
 }
 
 type ProgresState = typeof initState

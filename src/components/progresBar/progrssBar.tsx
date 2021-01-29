@@ -5,8 +5,11 @@ import {AppState} from '../../redusers/index'
 
 export const ProgressBar: React.FC<{}> = () => {
   const ProgressState = useSelector((state: AppState) => state.progressBar)
-  console.log(ProgressState.visible)
+  const progresItems = [] as JSX.Element[]
+  for (let i = 0; i < ProgressState.progres; i++) {
+    progresItems.push(<div key={i.toString()} className="ProgressBar__item"></div>)
+  }
   return ProgressState.visible ? <div className="ProgressBar">
-    {new Array(ProgressState.progres).map(() => <div key={Date.now()} className="ProgressBar__item"></div>)}
+    {progresItems}
   </div> : null
 }
