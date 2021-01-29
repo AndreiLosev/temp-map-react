@@ -7,19 +7,23 @@ import './App.scss'
 import {NavigatorContext} from './navigation'
 import {NavBar} from './components/navbar/navBar'
 import {LoadingPage} from './components/loadingPage/loadingPage'
+import {ProgressBar} from './components/progresBar/progrssBar'
 
 
 const store = createStore(rootReduser, applyMiddleware(thunk))
 
 const App = () => {
-  const {loding, table, tempChart, humChart} = React.useContext(NavigatorContext)
+  const {loadingFiles, tablesData, tempChart, humChart, temp3DChart, hun3DChart} = React.useContext(NavigatorContext)
   return <Provider store={store}>
     <NavBar />
+    <ProgressBar />
     <main className="pages">
-      {loding ? <LoadingPage /> : null}
-      {table ? 'tablePahe' : null}
+      {loadingFiles ? <LoadingPage /> : null}
+      {tablesData ? 'tablePahe' : null}
       {tempChart ? 'tempChartPahe' : null}
       {humChart ? 'HumChartPahe' : null}
+      {temp3DChart ? 'temp3DChart' : null}
+      {hun3DChart ? 'hun3DChart' : null}
     </main>
 
   </Provider>

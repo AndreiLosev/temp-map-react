@@ -1,0 +1,15 @@
+.ProgressBar {
+  top: 20vh;
+  position: absolute;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 75vw;
+  height: 10vh;
+  border: 1px solid  rgb(14, 72, 197); 
+}
+
+.ProgressBar__item {
+  margin: 3px;
+  background-color: rgb(14, 72, 197);
+}
