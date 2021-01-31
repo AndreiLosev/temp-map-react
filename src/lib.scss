@@ -1,0 +1,39 @@
+@mixin table($columns) {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  margin-right: 5px;
+  flex-grow: 1;
+
+  .table__row {  border-bottom: 1px solid #19aa8d };
+
+  .header {
+    background-color: #19aa8d;
+    color: #fff;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-weight: bold;
+    div { border-right: 1px solid #fff }; 
+    div:last-child {border-right: 0 solid #fff}
+  };
+
+  div.body { *:hover { background-color: #e5e5e5 }};
+  .table__row {
+    display: flex;
+    flex-direction: row;
+    * {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      border-right: 1px solid #19aa8d;
+      cursor: pointer;
+    };
+
+    @each $column, $cWidth in $columns {
+      :nth-child(#{$column}) { width: $cWidth };
+    };
+    :last-child { border-right: 0 };
+  };
+};

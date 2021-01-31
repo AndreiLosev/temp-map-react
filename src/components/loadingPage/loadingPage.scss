@@ -1,0 +1,33 @@
+@import '../../lib.scss';
+
+
+.loadingPage {
+  width: 95%;
+}
+.files-table {
+  width: 100%;
+  font-size: 16px;
+  margin-top: 5px;
+  $columns: (1: 20%, 2: 20%, 3: 20%, 4: 20%, 5: 20%);
+  @include table($columns);
+  .body {
+    :nth-child(5) {
+      input {
+        font-size: 16px;
+        font-family: 'Times New Roman', Times, serif;
+      }
+    }
+  }
+}
+
+.create-export {
+  margin: 3px;
+  padding: 5px;
+  border-radius: 3px;
+  box-shadow: 0 0 1px #0f0f0f;
+}
+
+.termo-map {
+  margin-left: 15px;
+}
+
