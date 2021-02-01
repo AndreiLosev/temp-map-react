@@ -20,27 +20,17 @@ export const LoadingPage = () => {
           dispatch(LoadingPageAction.loadAndParseDate(e.target.files))
       }}/>
     <button className='create-export' onClick={() => {
+      dispatch(LoadingPageAction.createLoading(true))
       const text = csvFromMainData(mainData, period)
       const result = text ? prepareDataForDownload(text) : ''
-
       setDownloadData(result)
+      dispatch(LoadingPageAction.createLoading(false))
     }}>
       Экспорт в csv
     </button>
     {downloadDta ? <a className="termo-map" download="termo_map.csv" href={downloadDta} ref={aref}>
-      termoMap
+      termo_map
     </a> : null}
-    {/* <a download="9dksk239xwd.txt" ref={aref} >test</a>
-    <button onClick={() => {
-        var type = 'data:application/octet-stream;base64, ';
-        var text = 'Hello world !!!!!!!!!';
-        var base = btoa(text);
-        var res = type + base;
-        if (aref.current) {
-          // @ts-ignore
-          aref.current.href = res;
-        }
-    }}>testbutton</button> */}
     <div className="files-table">
       {filesMetaData.length ? <div className={cn('table__row', 'header')}>
         <div>Имя файла</div>
@@ -49,7 +39,10 @@ export const LoadingPage = () => {
         <div>Последнее измерение</div>
         <div>Псевдоним</div>
       </div> : null}
-      {filesMetaData.map((i, index) => <div className={cn('table__row', 'body')} key={i.fileName}>
+      {filesMetaData.map((i, index) => <div
+        className={cn('table__row', 'body')}
+        key={i.fileName}
+        onClick={() => dispatch(LoadingPageAction.createRemoveDataIemt(index, i.fileName))}>
         <div>{i.fileName}</div>
         <div>{i.numberOfMeasurements.toString()}</div>
         <div>{new Date(i.startMeasurements).toLocaleString()}</div>

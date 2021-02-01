@@ -1,9 +1,11 @@
 import {combineReducers, AnyAction} from 'redux'
 import {ThunkAction} from 'redux-thunk'
 import {loadPageReduser} from './loadingFileReduser'
+import {dateTableReduser} from './tableDataReduser'
 
 export const rootReduser = combineReducers({
   loadingPage: loadPageReduser,
+  tableData: dateTableReduser,
 })
 
 export type AppState = ReturnType<typeof rootReduser>

@@ -7,6 +7,7 @@ import './App.scss'
 import {NavigatorContext} from './navigation'
 import {NavBar} from './components/navbar/navBar'
 import {LoadingPage} from './components/loadingPage/loadingPage'
+import {TablesDataPage} from './components/tablesDataPage/tablesDataPage'
 
 
 const store = createStore(rootReduser, applyMiddleware(thunk))
@@ -17,7 +18,7 @@ const App = () => {
     <NavBar />
     <main className="pages">
       {loadingFiles ? <LoadingPage /> : null}
-      {tablesData ? 'tablePahe' : null}
+      {tablesData ? <TablesDataPage /> : null}
       {tempChart ? 'tempChartPahe' : null}
       {humChart ? 'HumChartPahe' : null}
       {temp3DChart ? 'temp3DChart' : null}

@@ -9,6 +9,7 @@ class LoadingPageActionT {
   static LOADING = 'LOADING' as const
   static SET_PSEVDONIM = 'SET_PSEVDONIM' as const
   static GET_PERIOD = 'GET_PERIOD' as const
+  static REMOVE_DATA_ITEM = 'REMOVE_DATA_ITEM' as const
 }
 
 export class LoadingPageAction {
@@ -27,6 +28,9 @@ export class LoadingPageAction {
   
   static createGetPeriod = (start: number, end: number) =>
     ({ type: LoadingPageActionT.GET_PERIOD, pyload: {start, end} })
+
+  static createRemoveDataIemt = (index: number, name: string) =>
+    ({ type: LoadingPageActionT.REMOVE_DATA_ITEM, pyload: {index, name} })
 
   static loadAndParseDate = (files: FileList): AppAction => async dispatch => {
     dispatch(LoadingPageAction.createLoading(true))
@@ -56,6 +60,7 @@ type Action =
   | ReturnType<typeof LoadingPageAction.createLoading>
   | ReturnType<typeof LoadingPageAction.createSetPsevdonim>
   | ReturnType<typeof LoadingPageAction.createGetPeriod>
+  | ReturnType<typeof LoadingPageAction.createRemoveDataIemt>
 
 type FileMetaData = {
   fileName: string,
@@ -92,6 +97,11 @@ export const  loadPageReduser: Reducer<LoadPageState, Action> = (state=initState
       return {...state, filesMetaData: newFileMetaData}
     case LoadingPageActionT.GET_PERIOD:
       return {...state, period: action.pyload}
+    case LoadingPageActionT.REMOVE_DATA_ITEM:
+      const newFileMetaData1 = state.filesMetaData.filter((_, i) => i !== action.pyload.index)
+      const newMainData = {...state.mainData}
+      delete(newMainData[action.pyload.name])
+      return {...state, mainData: newMainData, filesMetaData: newFileMetaData1}
     default:
       return state
   }
