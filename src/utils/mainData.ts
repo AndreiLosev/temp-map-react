@@ -4,6 +4,8 @@ export type MainItem = {
   temperature: number,
   humidity: number,
 }
+export type valueType = 'temperature' | 'humidity'
+export type funMode = 'max' | 'min' | 'mid'
 
 export type IntDate = number
 
@@ -80,4 +82,66 @@ export const binFind = (data: number[], target: number) => {
     }
     if ((end - start) === 1) return [data[start], data[end]]
   }
+}
+
+export const getExtremun = (
+  mainData: MainData, period: {start: number, end: number},
+  param: valueType, mod: funMode, pseudonyms: string[],
+) => {
+  const points = Object.keys(mainData)
+  const more = (a: number, b: number) => a > b
+  const les = (a: number, b: number) => a < b
+  const condition = (mod === 'max') ? more : les
+  return points.map((point, i) => {
+    const data = mainData[point]
+    const pseudonym = pseudonyms[i]
+    const keys = Array.from(data.keys())
+    const start = getStartPoint(period.start, keys)
+    const step = keys[1] - keys[0]
+    let extremum = findByMainData(data, keys[0])[param]
+    let extremumKey = start
+    for (let i = start; i <= period.end; i += step) {
+      const current = findByMainData(data, keys[i])[param]
+      if (condition(current, extremum)) {
+        extremum = current
+        extremumKey = i
+      }
+    }
+    return   {value: extremum, date: new Date(extremumKey).toLocaleString(), point: pseudonym}
+  })
+
+}
+
+export const getMidleValue = (
+  mainData: MainData, param: 'temperature' | 'humidity',
+  period: {start: number, end: number}, pseudonyms: string[],
+) => {
+  const points = Object.keys(mainData)
+  return points.map((point, i) => {
+    const data = new Map(mainData[point].entries())
+    const pseudonym = pseudonyms[i]
+    for (let key of Array.from(data.keys())) {
+      if (key < period.start) data.delete(key)
+      if (key > period.start) data.delete(key)
+    }
+      const mid = Array.from(data.keys())
+        .reduce((acc, key) => acc + findByMainData(data, key)[param] / data.size, 0)
+        const periodD = period.end - period.start
+      const Days = Math.trunc(periodD / (24 * 60 * 60 * 1000))
+      const Hours = Math.trunc((periodD % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000))
+      const Minust = Math.trunc((periodD % (60 * 60 * 1000)) / (60 * 1000))
+      const dateResult = `За ${Days} дней ${Hours} часов ${Minust} Минут`
+      return {value: mid, date: dateResult, point: pseudonym}
+  })
+}
+
+const getStartPoint = <T>(periodStart: T, points: T[]) => {
+  let start = points[0]
+  for (let i = 0; i < points.length; i++) {
+    if (periodStart >= points[i]) {
+      start = points[i]
+      break
+    }
+  }
+  return start
 }

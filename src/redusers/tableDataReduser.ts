@@ -1,4 +1,5 @@
 import {Reducer} from 'redux'
+import {valueType, funMode} from '../utils/mainData'
 
 export class TableDataActionT {
   static GET_POINTS_EXTREMUM = 'GET_POINTS_EXTREMUM' as const
@@ -13,9 +14,6 @@ type TableDataType = {
   date: string,
   point: string,
 }
-
-type valueType = 'temperature' | 'humidity'
-type funMode = 'max' | 'min' | 'mid'
 
 export class TableDataAction {
 
@@ -71,7 +69,8 @@ const initState = {
   period: {
     start: 0,
     end: 0,
-  }
+  },
+  loading: false,
 }
 
 type tableDataState = typeof initState
@@ -80,6 +79,8 @@ export const dateTableReduser: Reducer<tableDataState, Action> = (state=initStat
   switch (action.type) {
     case TableDataActionT.SET_PERIOD:
       return {...state, period: action.pyload}
+    case TableDataActionT.SHOW_LOADING:
+      return {...state, loading: action.pyload}
     default:
       return state
   }

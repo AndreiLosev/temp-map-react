@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {AppState} from '../../redusers'
 import cn from 'classnames'
 import {TableDataAction} from '../../redusers/tableDataReduser'
+import {LoadingSpiner} from '../loading/loading'
 
 
 export const TablesDataPage: React.FC = () => {
@@ -19,6 +20,7 @@ export const TablesDataPage: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return <div className="data-page">
+    <LoadingSpiner visible={tablesDataPage.loading} />
     <div className="data-page-main">
       <div className={cn('table__row', 'header')}>
         <div>Точка</div>
