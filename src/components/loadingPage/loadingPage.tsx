@@ -42,7 +42,10 @@ export const LoadingPage = () => {
       {filesMetaData.map((i, index) => <div
         className={cn('table__row', 'body')}
         key={i.fileName}
-        onClick={() => dispatch(LoadingPageAction.createRemoveDataIemt(index, i.fileName))}>
+        onClick={e => {
+          if (!(e.target instanceof(HTMLInputElement)))
+            dispatch(LoadingPageAction.createRemoveDataIemt(index, i.fileName))
+        }}>
         <div>{i.fileName}</div>
         <div>{i.numberOfMeasurements.toString()}</div>
         <div>{new Date(i.startMeasurements).toLocaleString()}</div>

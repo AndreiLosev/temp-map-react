@@ -29,8 +29,8 @@ export class TableDataAction {
   static createShowLoading = (show: boolean) =>
     ({ type: TableDataActionT.SHOW_LOADING, pyload: show })
 
-  static createSetPeriod = (start: number, end: number) =>
-    ({ type: TableDataActionT.SET_PERIOD, pyload: {start, end} })
+  static createSetPeriod = (value: number, type: 'start' | 'end') =>
+    ({ type: TableDataActionT.SET_PERIOD, pyload: {value, type} })
 }
 
 type Action = 
@@ -78,7 +78,7 @@ type tableDataState = typeof initState
 export const dateTableReduser: Reducer<tableDataState, Action> = (state=initState, action) => {
   switch (action.type) {
     case TableDataActionT.SET_PERIOD:
-      return {...state, period: action.pyload}
+      return {...state, period: {...state.period, [action.pyload.type]: action.pyload.value}}
     case TableDataActionT.SHOW_LOADING:
       return {...state, loading: action.pyload}
     default:
