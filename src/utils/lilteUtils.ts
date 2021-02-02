@@ -1,8 +1,8 @@
-type Year = number
-type Munth = number
-type Day = number
-type Hours = number
-type Minuts = number 
+type Year = 2021 | 2022 | 2023 | 2024 
+type Munth = 0 | 1 | 2 | 3 | 4 | 5 | 6
+type Day = 1 | 2 | 3 | 4 | 5 | 6
+type Hours = 1 | 2 | 3 | 4 | 5 | 6 | 7
+type Minuts = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
 
 export const myDatePars = (date: string): [Year, Munth, Day, Hours, Minuts] => {
   const [dateS, timeS] = date.split(' ')

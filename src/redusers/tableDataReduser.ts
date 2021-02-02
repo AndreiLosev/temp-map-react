@@ -1,12 +1,14 @@
 import {Reducer} from 'redux'
-import {valueType, funMode} from '../utils/mainData'
+import {valueType, funMode, MainData, getExtremun, getMidleValue} from '../utils/mainData'
+import {AppAction} from '.'
 
 export class TableDataActionT {
   static GET_POINTS_EXTREMUM = 'GET_POINTS_EXTREMUM' as const
   static GET_MID_VALUE = 'GET_MID_VALUE' as const 
   static GET_ABSOLUTE_EXTREMUM = 'GET_ABSOLUTE_EXTREMUM' as const
   static SHOW_LOADING = 'SHOW_LOADING' as const
-  static SET_PERIOD = 'SET_PERIOD' as const
+  static SET_PERIOD = 'SET_PERIOD' as const 
+  static CALCULATE = 'CALCULATE' as const
 }
 
 type TableDataType = {
@@ -17,8 +19,8 @@ type TableDataType = {
 
 export class TableDataAction {
 
-  static createGetPointsExtremum = (extremum: TableDataType[], type: valueType, mode: funMode) =>
-    ({ type: TableDataActionT.GET_POINTS_EXTREMUM, pyload: {extremum, type, mode} })
+  static createGetPointsExtremum = (extremum: Extremums) =>
+    ({ type: TableDataActionT.GET_POINTS_EXTREMUM, pyload: extremum})
 
   static createMidValue = (mid: TableDataType, type: valueType) =>
     ({ type: TableDataActionT.GET_MID_VALUE, pyload: {mid, type} })
@@ -31,6 +33,32 @@ export class TableDataAction {
 
   static createSetPeriod = (value: number, type: 'start' | 'end') =>
     ({ type: TableDataActionT.SET_PERIOD, pyload: {value, type} })
+  
+  static createCalculate = (
+    mainData: MainData, period: {start: number, end: number}, pseudonyms: string[]
+  ): AppAction => dispatch => {
+    const maxT = getExtremun(mainData, period, 'temperature', 'max', pseudonyms)
+    const midT = getMidleValue(mainData, 'temperature', period, pseudonyms)
+    const minT = getExtremun(mainData, period, 'temperature', 'min', pseudonyms)
+    const maxH = getExtremun(mainData, period, 'humidity', 'max', pseudonyms)
+    const midH = getMidleValue(mainData, 'humidity', period, pseudonyms)
+    const minH = getExtremun(mainData, period, 'humidity', 'min', pseudonyms)
+    const extremums = pseudonyms.reduce((acc, pseudonym) => {
+      return {...acc, [pseudonym]: {
+        temperature: {
+          min: minT[pseudonym],
+          mid: midT[pseudonym],
+          max: maxT[pseudonym],
+        },
+        humidity: {
+          min: minH[pseudonym],
+          mid: midH[pseudonym],
+          max: maxH[pseudonym],
+        }
+      }}
+    }, {} as Extremums)
+    dispatch(TableDataAction.createGetPointsExtremum(extremums))
+  }
 }
 
 type Action = 
@@ -40,20 +68,20 @@ type Action =
   | ReturnType<typeof TableDataAction.createAbsoluteExtrmum>
   | ReturnType<typeof TableDataAction.createSetPeriod>
 
-
+type Extremums = {[point: string]: {
+  temperature: {
+    min: {value: number, date: string},
+    mid: {value: number, date: string},
+    max: {value: number, date: string},
+  },
+  humidity: {
+    min: {value: number, date: string},
+    mid: {value: number, date: string},
+    max: {value: number, date: string},
+  },
+}}
 const initState = {
-  extremums: {} as {[point: string]: {
-    temperature: {
-      min: {value: number, date: string},
-      mid: {value: number, date: string},
-      max: {value: number, date: string},
-    },
-    humidity: {
-      min: {value: number, date: string},
-      mid: {value: number, date: string},
-      max: {value: number, date: string},
-    },
-  }},
+  extremums: {} as Extremums,
   absExtremum: {} as {
     temperature: {
       min: {value: number, date: string[], point: string[]},
@@ -79,6 +107,8 @@ export const dateTableReduser: Reducer<tableDataState, Action> = (state=initStat
   switch (action.type) {
     case TableDataActionT.SET_PERIOD:
       return {...state, period: {...state.period, [action.pyload.type]: action.pyload.value}}
+    case TableDataActionT.GET_POINTS_EXTREMUM:
+      return {...state, extremums: action.pyload}
     case TableDataActionT.SHOW_LOADING:
       return {...state, loading: action.pyload}
     default:

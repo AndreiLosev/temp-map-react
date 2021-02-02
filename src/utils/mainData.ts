@@ -92,7 +92,7 @@ export const getExtremun = (
   const more = (a: number, b: number) => a > b
   const les = (a: number, b: number) => a < b
   const condition = (mod === 'max') ? more : les
-  return points.map((point, i) => {
+  return points.reduce((acc, point, i) => {
     const data = mainData[point]
     const pseudonym = pseudonyms[i]
     const keys = Array.from(data.keys())
@@ -107,8 +107,8 @@ export const getExtremun = (
         extremumKey = i
       }
     }
-    return   {value: extremum, date: new Date(extremumKey).toLocaleString(), point: pseudonym}
-  })
+    return   {...acc, [pseudonym]: {value: extremum, date: new Date(extremumKey).toLocaleString()}}
+  }, {} as {[point: string]: {value: number, date: string}})
 
 }
 
@@ -117,7 +117,7 @@ export const getMidleValue = (
   period: {start: number, end: number}, pseudonyms: string[],
 ) => {
   const points = Object.keys(mainData)
-  return points.map((point, i) => {
+  return points.reduce((accc, point, i) => {
     const data = new Map(mainData[point].entries())
     const pseudonym = pseudonyms[i]
     for (let key of Array.from(data.keys())) {
@@ -131,8 +131,8 @@ export const getMidleValue = (
       const Hours = Math.trunc((periodD % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000))
       const Minust = Math.trunc((periodD % (60 * 60 * 1000)) / (60 * 1000))
       const dateResult = `За ${Days} дней ${Hours} часов ${Minust} Минут`
-      return {value: mid, date: dateResult, point: pseudonym}
-  })
+      return {[pseudonym]: {value: mid, date: dateResult}}
+  }, {} as {[point: string]: {value: number, date: string}})
 }
 
 const getStartPoint = <T>(periodStart: T, points: T[]) => {
