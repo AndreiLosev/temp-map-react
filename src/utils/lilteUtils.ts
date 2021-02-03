@@ -6,8 +6,8 @@ type Minuts = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
 
 export const myDatePars = (date: string): [Year, Munth, Day, Hours, Minuts] => {
   const [dateS, timeS] = date.split(' ')
-  const dateArrS = dateS.split('.')
-  const timeArrS = timeS.split(':')
+  const dateArrS = dateS ? dateS.split('.') : ''
+  const timeArrS = timeS ? timeS.split(':') : ''
   const year =  parseInt(dateArrS[2]) as Year
   const month = parseInt(dateArrS[1]) - 1 as Munth
   const day = parseInt(dateArrS[0]) as Day
