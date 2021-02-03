@@ -22,18 +22,18 @@ export const SetPeriodAndCalc: React.FC<Props> = ({ start, end, maxPeriod, setPe
       mask.mask(refStart.current)
       mask.mask(refEnd.current)
     }
-    if (!start && !end) {
+    if (!start && !end)
       setPeriodS({
         start: new Date(maxPeriod.start).toLocaleString(),
         end: new Date(maxPeriod.end).toLocaleString(),
       })
-    }
+    else
+    setPeriodS({
+      start: new Date(start).toLocaleString(),
+      end: new Date(end).toLocaleString(),
+    })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  console.log({
-    start: new Date(start).toLocaleString(),
-    end: new Date(end).toLocaleString()
-  })
   const setAndValidPeriod = (type: 'start' | 'end') => (e: React.ChangeEvent<HTMLInputElement>) => {
     const [Year, Munth, Day, Hours, Minuts] = myDatePars(e.target.value)
       .map(i => i ? i : 0)

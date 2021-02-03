@@ -26,9 +26,11 @@ export const TablesDataPage: React.FC = () => {
       end={tablesDataPage.period.end}
       maxPeriod={loadingPage.period}
       setPeriod={(dateTime, type) => dispatch(TableDataAction.createSetPeriod(dateTime, type))}
-      calculate={() => dispatch(TableDataAction.createCalculate(
-        loadingPage.mainData, tablesDataPage.period, loadingPage.filesMetaData.map(i => i.pseudonym)
-      ))}
+      calculate={() => {
+        dispatch(TableDataAction.createCalculate(
+          loadingPage.mainData, tablesDataPage.period, loadingPage.filesMetaData.map(i => i.pseudonym)
+        ))}
+      }
     />
     <LoadingSpiner visible={tablesDataPage.loading} />
     <div className="data-page-main">

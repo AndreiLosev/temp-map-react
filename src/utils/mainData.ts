@@ -13,7 +13,7 @@ export type MainData = {[point: string] :Map<IntDate, MainItem>}
 
 
 export const getMainData = (data: string[], names: string[]) => {
-  const reg = /\d\d.\d\d.\d\d\d\d\s\d\d:\d\d:\d\d;\S\S\S/
+  const reg = /\d\d.\d\d.\d\d\d\d\s\d\d:\d\d:\d\d;\S/
   const rafData = data
     .map(i => i.split('\n'))
     .map(i => i.filter(j => reg.test(j)))
@@ -101,7 +101,7 @@ export const getExtremun = (
     let extremum = findByMainData(data, keys[0])[param]
     let extremumKey = start
     for (let i = start; i <= period.end; i += step) {
-      const current = findByMainData(data, keys[i])[param]
+      const current = findByMainData(data, i)[param]
       if (condition(current, extremum)) {
         extremum = current
         extremumKey = i
@@ -117,13 +117,14 @@ export const getMidleValue = (
   period: {start: number, end: number}, pseudonyms: string[],
 ) => {
   const points = Object.keys(mainData)
-  return points.reduce((accc, point, i) => {
+  return points.reduce((acc, point, i) => {
     const data = new Map(mainData[point].entries())
     const pseudonym = pseudonyms[i]
     for (let key of Array.from(data.keys())) {
       if (key < period.start) data.delete(key)
-      if (key > period.start) data.delete(key)
+      if (key > period.end) data.delete(key)
     }
+    console.log(data.size)
       const mid = Array.from(data.keys())
         .reduce((acc, key) => acc + findByMainData(data, key)[param] / data.size, 0)
         const periodD = period.end - period.start
@@ -131,7 +132,7 @@ export const getMidleValue = (
       const Hours = Math.trunc((periodD % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000))
       const Minust = Math.trunc((periodD % (60 * 60 * 1000)) / (60 * 1000))
       const dateResult = `За ${Days} дней ${Hours} часов ${Minust} Минут`
-      return {[pseudonym]: {value: mid, date: dateResult}}
+      return {...acc, [pseudonym]: {value: roundIn10(mid), date: dateResult}}
   }, {} as {[point: string]: {value: number, date: string}})
 }
 

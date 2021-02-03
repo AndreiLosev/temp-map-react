@@ -1,5 +1,6 @@
 import {Reducer} from 'redux'
 import {valueType, funMode, MainData, getExtremun, getMidleValue} from '../utils/mainData'
+// import {promisifySyncFun} from '../utils/lilteUtils'
 import {AppAction} from '.'
 
 export class TableDataActionT {
@@ -36,7 +37,8 @@ export class TableDataAction {
   
   static createCalculate = (
     mainData: MainData, period: {start: number, end: number}, pseudonyms: string[]
-  ): AppAction => dispatch => {
+  ): AppAction => async dispatch => {
+    dispatch(TableDataAction.createShowLoading(true))
     const maxT = getExtremun(mainData, period, 'temperature', 'max', pseudonyms)
     const midT = getMidleValue(mainData, 'temperature', period, pseudonyms)
     const minT = getExtremun(mainData, period, 'temperature', 'min', pseudonyms)
@@ -58,6 +60,7 @@ export class TableDataAction {
       }}
     }, {} as Extremums)
     dispatch(TableDataAction.createGetPointsExtremum(extremums))
+    dispatch(TableDataAction.createShowLoading(false))
   }
 }
 
