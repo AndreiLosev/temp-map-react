@@ -15,18 +15,20 @@ export const SetPeriodAndCalc: React.FC<Props> = ({ start, end, maxPeriod, setPe
   const refStart = React.useRef<HTMLInputElement>(null)
   const refEnd = React.useRef<HTMLInputElement>(null)
   const [periodS, setPeriodS] = React.useState({start: '', end: ''})
-  // const OneHours = 60 * 60 * 1000
   React.useEffect(() => {
     const mask = new Inputmask('99.99.9999, 99:99')
     if (refStart.current && refEnd.current) {
       mask.mask(refStart.current)
       mask.mask(refEnd.current)
     }
-    if (!start && !end)
+    if (!start && !end) {
       setPeriodS({
         start: new Date(maxPeriod.start).toLocaleString(),
         end: new Date(maxPeriod.end).toLocaleString(),
       })
+      setPeriod(maxPeriod.start, 'start')
+      setPeriod(maxPeriod.end, 'end')
+    }
     else
     setPeriodS({
       start: new Date(start).toLocaleString(),
@@ -53,6 +55,11 @@ export const SetPeriodAndCalc: React.FC<Props> = ({ start, end, maxPeriod, setPe
       value={periodS.end}
       onChange={setAndValidPeriod('end')}
     />
-    <button className="calculate" onClick={calculate}>Calculate</button>
+    <button className="calculate" onClick={() => {
+      if (start < maxPeriod.start) return alert('start очень маленький')
+      if (end > maxPeriod.end) return alert('end очень большой')
+      if (end < start) return alert('end < start')
+      calculate()
+    }}>Calculate</button>
   </div>
 }

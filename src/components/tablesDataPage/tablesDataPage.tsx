@@ -13,13 +13,6 @@ export const TablesDataPage: React.FC = () => {
   const loadingPage = useSelector((state: AppState) => state.loadingPage)
   const tablesDataPage = useSelector((state: AppState) => state.tableData)
   const dispatch = useDispatch()
-  React.useEffect(() => {
-    const {start, end} = tablesDataPage.period
-    if (!start && !end) {
-      dispatch(TableDataAction.createSetPeriod(loadingPage.period.start, 'start'))
-      dispatch(TableDataAction.createSetPeriod(loadingPage.period.end, 'end'))
-    }
-  }, [])
   return <div className="data-page">
     <SetPeriodAndCalc
       start={tablesDataPage.period.start}
@@ -49,6 +42,21 @@ export const TablesDataPage: React.FC = () => {
         <div>Максимальная влажность</div>
         <div>Когда</div>
       </div>
+      {Object.keys(tablesDataPage.extremums).map(key => <div key={key} className={cn('table__row', 'body')}>
+        <div>{key}</div>
+        <div>{tablesDataPage.extremums[key].temperature.min.value}</div>
+        <div>{tablesDataPage.extremums[key].temperature.min.date}</div>
+        <div>{tablesDataPage.extremums[key].temperature.mid.value}</div>
+        <div>{tablesDataPage.extremums[key].temperature.mid.date}</div>
+        <div>{tablesDataPage.extremums[key].temperature.max.value}</div>
+        <div>{tablesDataPage.extremums[key].temperature.max.date}</div>
+        <div>{tablesDataPage.extremums[key].humidity.min.value}</div>
+        <div>{tablesDataPage.extremums[key].humidity.min.date}</div>
+        <div>{tablesDataPage.extremums[key].humidity.mid.value}</div>
+        <div>{tablesDataPage.extremums[key].humidity.mid.date}</div>
+        <div>{tablesDataPage.extremums[key].humidity.max.value}</div>
+        <div>{tablesDataPage.extremums[key].humidity.max.date}</div>
+      </div>)}
     </div>
   </div>
 }

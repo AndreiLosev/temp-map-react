@@ -124,7 +124,6 @@ export const getMidleValue = (
       if (key < period.start) data.delete(key)
       if (key > period.end) data.delete(key)
     }
-    console.log(data.size)
       const mid = Array.from(data.keys())
         .reduce((acc, key) => acc + findByMainData(data, key)[param] / data.size, 0)
         const periodD = period.end - period.start
