@@ -13,7 +13,7 @@ export const TablesDataPage: React.FC = () => {
   const loadingPage = useSelector((state: AppState) => state.loadingPage)
   const tablesDataPage = useSelector((state: AppState) => state.tableData)
   const dispatch = useDispatch()
-  const dataType = ['temperature', 'humidity']
+  const dataType = {temperature: 'Температура', humidity: 'Влажность'}
   const absExtremum = {
     min:'Минемальная',
     mid: {
