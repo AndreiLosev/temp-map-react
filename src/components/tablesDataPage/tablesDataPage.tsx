@@ -13,6 +13,16 @@ export const TablesDataPage: React.FC = () => {
   const loadingPage = useSelector((state: AppState) => state.loadingPage)
   const tablesDataPage = useSelector((state: AppState) => state.tableData)
   const dispatch = useDispatch()
+  const dataType = ['temperature', 'humidity']
+  const absExtremum = {
+    min:'Минемальная',
+    mid: {
+      min: 'Максимальная из средних',
+      mid: 'Средвняя в помещении',
+      max: 'Максимальных из средних',
+    },
+    max: 'Максимальная',
+  }
   return <div className="data-page">
     <SetPeriodAndCalc
       start={tablesDataPage.period.start}
@@ -26,22 +36,27 @@ export const TablesDataPage: React.FC = () => {
       }
     />
     <LoadingSpiner visible={tablesDataPage.loading} />
+    <div className="absExtremum">
+      <div className={cn('table__row', 'body')}>
+        <div></div>
+      </div>
+    </div>
     <div className="data-page-main">
-      <div className={cn('table__row', 'header')}>
+      {Object.keys(tablesDataPage.extremums).length ? <div className={cn('table__row', 'header')}>
         <div>Точка</div>
         <div>Минимальная температруа</div>
         <div>Когда</div>
         <div>Средняя температруа</div>
-        <div>Когда</div>
+        <div>За период</div>
         <div>Максимальная температруа</div>
         <div>Когда</div>
         <div>Минимальная влажность</div>
         <div>Когда</div>
         <div>Средняя влажность</div>
-        <div>Когда</div>
+        <div>За период</div>
         <div>Максимальная влажность</div>
         <div>Когда</div>
-      </div>
+      </div> : null}
       {Object.keys(tablesDataPage.extremums).map(key => <div key={key} className={cn('table__row', 'body')}>
         <div>{key}</div>
         <div>{tablesDataPage.extremums[key].temperature.min.value}</div>

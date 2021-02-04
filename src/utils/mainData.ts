@@ -130,15 +130,32 @@ export const getMidleValue = (
       const Days = Math.trunc(periodD / (24 * 60 * 60 * 1000))
       const Hours = Math.trunc((periodD % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000))
       const Minust = Math.trunc((periodD % (60 * 60 * 1000)) / (60 * 1000))
-      const dateResult = `За ${Days} дней ${Hours} часов ${Minust} Минут`
+      const dateResult = `${Days} д. ${Hours} ч. ${Minust} мин.`
       return {...acc, [pseudonym]: {value: roundIn10(mid), date: dateResult}}
   }, {} as {[point: string]: {value: number, date: string}})
+}
+
+export const getAbsoluteExtremum = (data: {[point: string]: {value: number, date: string}}, mod: 'max' | 'min') => {
+  const keys = Object.keys(data)
+  const more = (a: number, b: number) => a > b
+  const les = (a: number, b: number) => a < b
+  const condition = (mod === 'max') ? more : les
+  let result = [{point: keys[0], value: data[keys[0]].value, date: data[keys[0]].date}]
+  for (let key of keys) {
+    if (condition(data[key].value, result[0].value)) {
+      result = [{point: key, value: data[key].value, date: data[key].date}]
+    } else if (data[key].value === result[0].value) {
+      result.push({point: key, value: data[key].value, date: data[key].date})
+    }
+  }
+  return result
+
 }
 
 const getStartPoint = <T>(periodStart: T, points: T[]) => {
   let start = points[0]
   for (let i = 0; i < points.length; i++) {
-    if (periodStart >= points[i]) {
+    if (periodStart <= points[i]) {
       start = points[i]
       break
     }

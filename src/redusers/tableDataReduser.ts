@@ -1,7 +1,8 @@
 import {Reducer} from 'redux'
-import {valueType, funMode, MainData, getExtremun, getMidleValue} from '../utils/mainData'
+import {valueType, MainData, getExtremun, getMidleValue, getAbsoluteExtremum} from '../utils/mainData'
 // import {promisifySyncFun} from '../utils/lilteUtils'
 import {AppAction} from '.'
+import { roundIn10 } from '../utils/lilteUtils'
 
 export class TableDataActionT {
   static GET_POINTS_EXTREMUM = 'GET_POINTS_EXTREMUM' as const
@@ -26,8 +27,8 @@ export class TableDataAction {
   static createMidValue = (mid: TableDataType, type: valueType) =>
     ({ type: TableDataActionT.GET_MID_VALUE, pyload: {mid, type} })
   
-  static createAbsoluteExtrmum = (value: TableDataType, type: valueType, mode: funMode) =>
-    ({ type: TableDataActionT.GET_ABSOLUTE_EXTREMUM, pyload: {value, type, mode} })
+  static createAbsoluteExtrmum = (absExtremum: AbsExtremum) =>
+    ({ type: TableDataActionT.GET_ABSOLUTE_EXTREMUM, pyload: absExtremum })
   
   static createShowLoading = (show: boolean) =>
     ({ type: TableDataActionT.SHOW_LOADING, pyload: show })
@@ -35,30 +36,74 @@ export class TableDataAction {
   static createSetPeriod = (value: number, type: 'start' | 'end') =>
     ({ type: TableDataActionT.SET_PERIOD, pyload: {value, type} })
   
+
+
+
   static createCalculate = (
     mainData: MainData, period: {start: number, end: number}, pseudonyms: string[]
   ): AppAction => async dispatch => {
     dispatch(TableDataAction.createShowLoading(true))
-    const maxT = getExtremun(mainData, period, 'temperature', 'max', pseudonyms)
-    const midT = getMidleValue(mainData, 'temperature', period, pseudonyms)
-    const minT = getExtremun(mainData, period, 'temperature', 'min', pseudonyms)
-    const maxH = getExtremun(mainData, period, 'humidity', 'max', pseudonyms)
-    const midH = getMidleValue(mainData, 'humidity', period, pseudonyms)
-    const minH = getExtremun(mainData, period, 'humidity', 'min', pseudonyms)
-    const extremums = pseudonyms.reduce((acc, pseudonym) => {
-      return {...acc, [pseudonym]: {
-        temperature: {
-          min: minT[pseudonym],
-          mid: midT[pseudonym],
-          max: maxT[pseudonym],
-        },
-        humidity: {
-          min: minH[pseudonym],
-          mid: midH[pseudonym],
-          max: maxH[pseudonym],
+    const [extremums, absExtremum] = await new Promise<[Extremums, AbsExtremum]>(resilve => {
+      setTimeout(() => {
+        const maxT = getExtremun(mainData, period, 'temperature', 'max', pseudonyms)
+        const midT = getMidleValue(mainData, 'temperature', period, pseudonyms)
+        const minT = getExtremun(mainData, period, 'temperature', 'min', pseudonyms)
+        const maxH = getExtremun(mainData, period, 'humidity', 'max', pseudonyms)
+        const midH = getMidleValue(mainData, 'humidity', period, pseudonyms)
+        const minH = getExtremun(mainData, period, 'humidity', 'min', pseudonyms)
+        const extremums = pseudonyms.reduce((acc, pseudonym) => {
+          return {...acc, [pseudonym]: {
+            temperature: {
+              min: minT[pseudonym],
+              mid: midT[pseudonym],
+              max: maxT[pseudonym],
+            },
+            humidity: {
+              min: minH[pseudonym],
+              mid: midH[pseudonym],
+              max: maxH[pseudonym],
+            }
+          }}
+        }, {} as Extremums)
+        const absMaxT = getAbsoluteExtremum(maxT, 'max')
+        const absMidTMax = getAbsoluteExtremum(midT, 'max')
+        const absTMid = roundIn10(
+          Object.values(midT).reduce((acc, item) => acc + item.value, 0) / pseudonyms.length,
+        )
+        const absMidTmin = getAbsoluteExtremum(midT, 'min')
+        const absMinT = getAbsoluteExtremum(minT, 'min')
+
+        const absMaxH = getAbsoluteExtremum(maxH, 'max')
+        const absMidHMax = getAbsoluteExtremum(midH, 'max')
+        const absHMid = roundIn10(
+          Object.values(midH).reduce((acc, item) => acc + item.value, 0) / pseudonyms.length,
+        )
+        const absMidHMin = getAbsoluteExtremum(midH, 'min')
+        const absMinH = getAbsoluteExtremum(minH, 'min')
+        const absExtremum = {
+          temperature: {
+            min: absMinT,
+            max: absMaxT,
+            mid: {
+              min: absMidTmin,
+              mid: {value: absTMid},
+              max: absMidTMax,
+            }
+          },
+          humidity: {
+            min: absMinH,
+            max: absMaxH,
+            mid: {
+              min: absMidHMin,
+              mid: {value :absHMid},
+              max: absMidHMax,
+            }
+          },
         }
-      }}
-    }, {} as Extremums)
+        resilve([extremums, absExtremum])
+      })
+    })
+    dispatch(TableDataAction.createAbsoluteExtrmum(absExtremum))
     dispatch(TableDataAction.createGetPointsExtremum(extremums))
     dispatch(TableDataAction.createShowLoading(false))
   }
@@ -83,20 +128,30 @@ type Extremums = {[point: string]: {
     max: {value: number, date: string},
   },
 }}
+
+type AbsExtremum = {
+  temperature: {
+    min: {value: number, date: string, point: string}[],
+    mid: {
+      min: {value: number, point: string}[],
+      mid: {value: number},
+      max: {value: number, point: string}[], 
+    },
+    max: {value: number, date: string, point: string}[],
+  },
+  humidity: {
+    min: {value: number, date: string, point: string}[],
+    mid: {
+      min: {value: number, point: string}[],
+      mid: {value: number},
+      max: {value: number, point: string}[], 
+    },
+    max: {value: number, date: string, point: string}[],
+  },
+}
 const initState = {
   extremums: {} as Extremums,
-  absExtremum: {} as {
-    temperature: {
-      min: {value: number, date: string[], point: string[]},
-      mid: {value: number, date: string[], point: string[]},
-      max: {value: number, date: string[], point: string[]},
-    },
-    humidity: {
-      min: {value: number, date: string[], point: string[]},
-      mid: {value: number, date: string[], point: string[]},
-      max: {value: number, date: string[], point: string[]},
-    },
-  },
+  absExtremum: {} as AbsExtremum,
   period: {
     start: 0,
     end: 0,
@@ -114,6 +169,8 @@ export const dateTableReduser: Reducer<tableDataState, Action> = (state=initStat
       return {...state, extremums: action.pyload}
     case TableDataActionT.SHOW_LOADING:
       return {...state, loading: action.pyload}
+    case TableDataActionT.GET_ABSOLUTE_EXTREMUM:
+      return {...state, absExtremum: action.pyload}
     default:
       return state
   }
