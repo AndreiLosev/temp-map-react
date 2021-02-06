@@ -86,7 +86,7 @@ export class TableDataAction {
             max: absMaxT,
             mid: {
               min: absMidTmin,
-              mid: {value: absTMid},
+              mid: [{value: absTMid, point: 'среднее'}],
               max: absMidTMax,
             }
           },
@@ -95,7 +95,7 @@ export class TableDataAction {
             max: absMaxH,
             mid: {
               min: absMidHMin,
-              mid: {value :absHMid},
+              mid: [{value: absHMid, point: 'среднее'}],
               max: absMidHMax,
             }
           },
@@ -134,7 +134,7 @@ export type AbsExtremum = {
     min: {value: number, date: string, point: string}[],
     mid: {
       min: {value: number, point: string}[],
-      mid: {value: number},
+      mid: {value: number, point: string}[],
       max: {value: number, point: string}[], 
     },
     max: {value: number, date: string, point: string}[],
@@ -143,7 +143,7 @@ export type AbsExtremum = {
     min: {value: number, date: string, point: string}[],
     mid: {
       min: {value: number, point: string}[],
-      mid: {value: number},
+      mid: {value: number, point: string}[],
       max: {value: number, point: string}[], 
     },
     max: {value: number, date: string, point: string}[],
