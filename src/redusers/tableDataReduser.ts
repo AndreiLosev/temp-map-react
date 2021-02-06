@@ -116,7 +116,7 @@ type Action =
   | ReturnType<typeof TableDataAction.createAbsoluteExtrmum>
   | ReturnType<typeof TableDataAction.createSetPeriod>
 
-type Extremums = {[point: string]: {
+export type Extremums = {[point: string]: {
   temperature: {
     min: {value: number, date: string},
     mid: {value: number, date: string},
@@ -129,7 +129,7 @@ type Extremums = {[point: string]: {
   },
 }}
 
-type AbsExtremum = {
+export type AbsExtremum = {
   temperature: {
     min: {value: number, date: string, point: string}[],
     mid: {

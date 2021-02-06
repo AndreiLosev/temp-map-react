@@ -7,22 +7,13 @@ import cn from 'classnames'
 import {TableDataAction} from '../../redusers/tableDataReduser'
 import {LoadingSpiner} from '../loading/loading'
 import {SetPeriodAndCalc} from '../setPeriodAndCalc/setPeriodAndCalc'
+import {AbsExtremumTable} from './absExtrmunmTable'
 
 
 export const TablesDataPage: React.FC = () => {
   const loadingPage = useSelector((state: AppState) => state.loadingPage)
   const tablesDataPage = useSelector((state: AppState) => state.tableData)
   const dispatch = useDispatch()
-  const dataType = {temperature: 'Температура', humidity: 'Влажность'}
-  const absExtremum = {
-    min:'Минемальная',
-    mid: {
-      min: 'Максимальная из средних',
-      mid: 'Средвняя в помещении',
-      max: 'Максимальных из средних',
-    },
-    max: 'Максимальная',
-  }
   return <div className="data-page">
     <SetPeriodAndCalc
       start={tablesDataPage.period.start}
@@ -36,11 +27,10 @@ export const TablesDataPage: React.FC = () => {
       }
     />
     <LoadingSpiner visible={tablesDataPage.loading} />
-    <div className="absExtremum">
-      <div className={cn('table__row', 'body')}>
-        <div></div>
-      </div>
-    </div>
+    <AbsExtremumTable
+      date={tablesDataPage.absExtremum}
+      visible={Boolean(Object.keys(tablesDataPage.extremums).length)}
+    />
     <div className="data-page-main">
       {Object.keys(tablesDataPage.extremums).length ? <div className={cn('table__row', 'header')}>
         <div>Точка</div>
@@ -59,17 +49,17 @@ export const TablesDataPage: React.FC = () => {
       </div> : null}
       {Object.keys(tablesDataPage.extremums).map(key => <div key={key} className={cn('table__row', 'body')}>
         <div>{key}</div>
-        <div>{tablesDataPage.extremums[key].temperature.min.value}</div>
+        <div>{`${tablesDataPage.extremums[key].temperature.min.value} \u00B0C`}</div>
         <div>{tablesDataPage.extremums[key].temperature.min.date}</div>
-        <div>{tablesDataPage.extremums[key].temperature.mid.value}</div>
+        <div>{`${tablesDataPage.extremums[key].temperature.mid.value} \u00B0C`}</div>
         <div>{tablesDataPage.extremums[key].temperature.mid.date}</div>
-        <div>{tablesDataPage.extremums[key].temperature.max.value}</div>
+        <div>{`${tablesDataPage.extremums[key].temperature.max.value} \u00B0C`}</div>
         <div>{tablesDataPage.extremums[key].temperature.max.date}</div>
-        <div>{tablesDataPage.extremums[key].humidity.min.value}</div>
+        <div>{`${tablesDataPage.extremums[key].humidity.min.value} %`}</div>
         <div>{tablesDataPage.extremums[key].humidity.min.date}</div>
-        <div>{tablesDataPage.extremums[key].humidity.mid.value}</div>
+        <div>{`${tablesDataPage.extremums[key].humidity.mid.value} %`}</div>
         <div>{tablesDataPage.extremums[key].humidity.mid.date}</div>
-        <div>{tablesDataPage.extremums[key].humidity.max.value}</div>
+        <div>{`${tablesDataPage.extremums[key].humidity.max.value} %`}</div>
         <div>{tablesDataPage.extremums[key].humidity.max.date}</div>
       </div>)}
     </div>

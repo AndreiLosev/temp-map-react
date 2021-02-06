@@ -15,5 +15,14 @@
 
 .absExtremum {
   $columns: (1: 25%, 2: 25%, 3: 25%, 4: 25%);
-  @include table($columns)
+  @include table($columns);
+  width: 50%;
+  margin: 7px;
+}
+
+.absMidExtremum {
+  $columns: (1: 33%, 2: 33%, 3: 33%);
+  @include table($columns);
+  width: 50%;
+  margin: 7px;
 }
