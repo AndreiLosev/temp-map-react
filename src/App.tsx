@@ -8,6 +8,7 @@ import {NavigatorContext} from './navigation'
 import {NavBar} from './components/navbar/navBar'
 import {LoadingPage} from './components/loadingPage/loadingPage'
 import {TablesDataPage} from './components/tablesDataPage/tablesDataPage'
+import {TempChartPage} from './components/tempChartPage/tempChartPage'
 
 
 const store = createStore(rootReduser, applyMiddleware(thunk))
@@ -19,7 +20,7 @@ const App = () => {
     <main className="pages">
       {loadingFiles ? <LoadingPage /> : null}
       {tablesData ? <TablesDataPage /> : null}
-      {tempChart ? 'tempChartPahe' : null}
+      {tempChart ? <TempChartPage /> : null}
       {humChart ? 'HumChartPahe' : null}
       {temp3DChart ? 'temp3DChart' : null}
       {hun3DChart ? 'hun3DChart' : null}

@@ -162,3 +162,27 @@ const getStartPoint = <T>(periodStart: T, points: T[]) => {
   }
   return start
 }
+
+export const createChartData = (
+  mainData: MainData, period: {start: number, end: number}, step: number, param: valueType, pseudonyms: string[],
+) => {
+  const points = Object.keys(mainData)
+  return points.map((point, i) => {
+    const newMap = new Map(mainData[point].entries())
+    for (let key of Array.from(newMap.keys())) {
+      if (key < period.start) newMap.delete(key)
+      if (key > period.end) newMap.delete(key)
+    }
+    const resultX = [] as number[]
+    const resultY = [] as string[]
+    for (let i = period.start; i <= period.end; i += step) {
+      resultY.push(new Date(i).toLocaleString())
+      resultX.push(findByMainData(newMap, i)[param])
+    }
+    return {
+      x: resultX,
+      y: resultY,
+      name: pseudonyms[i],
+    }
+  })
+}
