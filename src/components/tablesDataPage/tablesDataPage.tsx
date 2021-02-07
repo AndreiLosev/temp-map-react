@@ -27,7 +27,11 @@ export const TablesDataPage: React.FC = () => {
         ))}
       }
     />
-    <ExportToCSV csvFrom={() => csvFromExtremum(tablesDataPage.extremums, tablesDataPage.absExtremum)} />
+    <ExportToCSV
+      csvFrom={() => csvFromExtremum(tablesDataPage.extremums, tablesDataPage.absExtremum)}
+      fileName={'Calculate_data'}
+      enable={Boolean(Object.keys(tablesDataPage.extremums).length)}
+    />
     <LoadingSpiner visible={tablesDataPage.loading} />
     <ExtremumTable
       data={tablesDataPage.extremums}

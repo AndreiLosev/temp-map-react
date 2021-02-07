@@ -18,7 +18,11 @@ export const LoadingPage = () => {
         if (e.target.files)
           dispatch(LoadingPageAction.loadAndParseDate(e.target.files))
       }}/>
-      <ExportToCSV csvFrom={() => csvFromMainData(mainData, period)} /> 
+      <ExportToCSV
+        csvFrom={() => csvFromMainData(mainData, period)}
+        fileName={'Raf_data'}
+        enable={Boolean(Object.keys(mainData).length)}
+      /> 
     <div className="files-table">
       {filesMetaData.length ? <div className={cn('table__row', 'header')}>
         <div>Имя файла</div>

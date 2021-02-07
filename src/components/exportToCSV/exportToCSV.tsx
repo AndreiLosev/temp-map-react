@@ -4,21 +4,25 @@ import {prepareDataForDownload} from '../../utils/loadUpload'
 
 type Props = {
   csvFrom: () => string,
+  fileName: string,
+  enable: boolean,
 }
 
-export const ExportToCSV: React.FC<Props> = ({csvFrom}) => {
+export const ExportToCSV: React.FC<Props> = ({csvFrom, fileName, enable}) => {
   const [downloadDta, setDownloadData] = React.useState('')
   const aref = React.useRef(null)
-  return <>
-    <button className='create-export' onClick={() => {
-      const text = csvFrom()
-      const result = text ? prepareDataForDownload(text) : ''
-      setDownloadData(result)
+  return <div className="ExportToCSV__wrapp">
+    <button className='create-export' disabled={!enable} onClick={() => {
+      if (enable) {
+        const text = csvFrom()
+        const result = text ? prepareDataForDownload(text) : ''
+        setDownloadData(result)
+      }
     }}>
       Экспорт в csv
     </button>
     {downloadDta ? <a className="termo-map" download="termo_map.csv" href={downloadDta} ref={aref}>
-      termo_map
+      {fileName}
     </a> : null}
-  </>
+  </div>
 }
