@@ -1,3 +1,4 @@
+import { AbsExtremum, Extremums } from "../redusers/tableDataReduser"
 import { findByMainData, MainData } from "./mainData"
 
 export const loadFile = (file: File) => new Promise<[string, string]>((resolev, reject) => {
@@ -41,4 +42,26 @@ export const csvFromMainData = (mainData: MainData, period: {start: number, end:
     return result.join('\n')
   }
   return ''
+}
+
+export const csvFromExtremum = (extremum: Extremums, absExtr: AbsExtremum) => {
+  // const types = ['temperature', 'humidity'] as ['temperature' , 'humidity']
+  // const degree = ['max', 'mid', 'min'] as ['max', 'mid', 'min']
+  const rowKeys = Object.keys(extremum)
+  const firstRow = ['Point;Max Temp \u00B0C;Date;Mid Temp \u00B0C;Period;Min Temp \u00B0C;Date;Max Hum %;Date;Mid Hum %;Period;Min Hum %;Date;']
+  const extremumRows = rowKeys.map(key => key + ';' +
+      extremum[key].temperature.max.value.toString().replace('.', ',') + ';' +
+      extremum[key].temperature.max.date + ';' +
+      extremum[key].temperature.mid.value.toString().replace('.', ',') + ';' +
+      extremum[key].temperature.mid.date + ';' +
+      extremum[key].temperature.min.value.toString().replace('.', ',') + ';' +
+      extremum[key].temperature.min.date + ';' +
+      extremum[key].humidity.max.value.toString().replace('.', ',') + ';' +
+      extremum[key].humidity.max.date + ';' +
+      extremum[key].humidity.mid.value.toString().replace('.', ',') + ';' +
+      extremum[key].humidity.mid.date + ';' +
+      extremum[key].humidity.min.value.toString().replace('.', ',') + ';' +
+      extremum[key].humidity.min.date + ';'
+  )  
+  return firstRow.concat(extremumRows).join('\n')
 }

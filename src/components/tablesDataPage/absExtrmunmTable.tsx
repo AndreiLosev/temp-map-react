@@ -27,7 +27,7 @@ export const AbsExtremumTable: React.FC<Props> = ({date, visible}) => {
         item !== 'mid' ? <div className="absExtremum" key={item}>
           {createHeader(tableName('температура')[item], true)}
           {date.temperature[item].map(item =>
-            <div className={cn('table__row', 'body')} key={item.point}>
+            <div className={cn('table__row', 'body')} key={`${item.point} ${item.point}`}>
               <div>Среди всех</div>
               <div>{item.point}</div>
               <div>{`${item.value} \u00B0C`}</div>
@@ -38,7 +38,7 @@ export const AbsExtremumTable: React.FC<Props> = ({date, visible}) => {
         item !== 'mid' ? <div className="absExtremum" key={item}>
           {createHeader(tableName('влажность')[item], true)}
           {date.humidity[item].map(item =>
-            <div className={cn('table__row', 'body')} key={item.point}>
+            <div className={cn('table__row', 'body')} key={`${item.point} ${item.point}`}>
               <div>Среди всех</div>
               <div>{item.point}</div>
               <div>{`${item.value} %`}</div>
@@ -49,7 +49,7 @@ export const AbsExtremumTable: React.FC<Props> = ({date, visible}) => {
           <div className="absMidExtremum" key={item}>
             {createHeader(tableName('температура')[item], false)}
             {date.temperature.mid[item].map(item =>
-            <div className={cn('table__row', 'body')} key={item.point}>
+            <div className={cn('table__row', 'body')} key={`${item.point} ${item.point}`}>
               <div>Из средних</div>
               <div>{item.point}</div>
               <div>{`${item.value} \u00B0C`}</div>
@@ -60,7 +60,7 @@ export const AbsExtremumTable: React.FC<Props> = ({date, visible}) => {
           <div className="absMidExtremum" key={item}>
             {createHeader(tableName('влажность')[item], false)}
             {date.humidity.mid[item].map(item =>
-            <div className={cn('table__row', 'body')} key={item.point}>
+            <div className={cn('table__row', 'body')} key={`${item.point} ${item.point}`}>
               <div>Из средних</div>
               <div>{item.point}</div>
               <div>{`${item.value} %`}</div>

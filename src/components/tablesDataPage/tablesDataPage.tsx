@@ -1,13 +1,14 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react'
 import './tablesDataPage.scss'
 import {useDispatch, useSelector} from 'react-redux'
 import {AppState} from '../../redusers'
-import cn from 'classnames'
 import {TableDataAction} from '../../redusers/tableDataReduser'
 import {LoadingSpiner} from '../loading/loading'
 import {SetPeriodAndCalc} from '../setPeriodAndCalc/setPeriodAndCalc'
 import {AbsExtremumTable} from './absExtrmunmTable'
+import {ExtremumTable} from './extremumTable'
+import {ExportToCSV} from '../exportToCSV/exportToCSV'
+import { csvFromExtremum } from '../../utils/loadUpload'
 
 
 export const TablesDataPage: React.FC = () => {
@@ -26,42 +27,15 @@ export const TablesDataPage: React.FC = () => {
         ))}
       }
     />
+    <ExportToCSV csvFrom={() => csvFromExtremum(tablesDataPage.extremums, tablesDataPage.absExtremum)} />
     <LoadingSpiner visible={tablesDataPage.loading} />
+    <ExtremumTable
+      data={tablesDataPage.extremums}
+      visible={Boolean(Object.keys(tablesDataPage.extremums).length)}
+    />
     <AbsExtremumTable
       date={tablesDataPage.absExtremum}
       visible={Boolean(Object.keys(tablesDataPage.extremums).length)}
     />
-    <div className="data-page-main">
-      {Object.keys(tablesDataPage.extremums).length ? <div className={cn('table__row', 'header')}>
-        <div>Точка</div>
-        <div>Минимальная температруа</div>
-        <div>Когда</div>
-        <div>Средняя температруа</div>
-        <div>За период</div>
-        <div>Максимальная температруа</div>
-        <div>Когда</div>
-        <div>Минимальная влажность</div>
-        <div>Когда</div>
-        <div>Средняя влажность</div>
-        <div>За период</div>
-        <div>Максимальная влажность</div>
-        <div>Когда</div>
-      </div> : null}
-      {Object.keys(tablesDataPage.extremums).map(key => <div key={key} className={cn('table__row', 'body')}>
-        <div>{key}</div>
-        <div>{`${tablesDataPage.extremums[key].temperature.min.value} \u00B0C`}</div>
-        <div>{tablesDataPage.extremums[key].temperature.min.date}</div>
-        <div>{`${tablesDataPage.extremums[key].temperature.mid.value} \u00B0C`}</div>
-        <div>{tablesDataPage.extremums[key].temperature.mid.date}</div>
-        <div>{`${tablesDataPage.extremums[key].temperature.max.value} \u00B0C`}</div>
-        <div>{tablesDataPage.extremums[key].temperature.max.date}</div>
-        <div>{`${tablesDataPage.extremums[key].humidity.min.value} %`}</div>
-        <div>{tablesDataPage.extremums[key].humidity.min.date}</div>
-        <div>{`${tablesDataPage.extremums[key].humidity.mid.value} %`}</div>
-        <div>{tablesDataPage.extremums[key].humidity.mid.date}</div>
-        <div>{`${tablesDataPage.extremums[key].humidity.max.value} %`}</div>
-        <div>{tablesDataPage.extremums[key].humidity.max.date}</div>
-      </div>)}
-    </div>
   </div>
 }

@@ -5,13 +5,12 @@ import './loadingPage.scss'
 import {AppState} from '../../redusers/index'
 import { LoadingPageAction } from '../../redusers/loadingFileReduser'
 import {LoadingSpiner} from '../loading/loading'
-import {csvFromMainData, prepareDataForDownload} from '../../utils/loadUpload'
+import {csvFromMainData} from '../../utils/loadUpload'
+import {ExportToCSV} from '../exportToCSV/exportToCSV'
 
 export const LoadingPage = () => {
   const {loading, filesMetaData, mainData, period} = useSelector((state: AppState) => state.loadingPage)
-  const [downloadDta, setDownloadData] = React.useState('')
   const dispatch = useDispatch()
-  const aref = React.useRef(null)
   return <div className={cn('loadingPage')}>
     <LoadingSpiner visible={loading} />
     <input type="file" multiple={true}
@@ -19,18 +18,7 @@ export const LoadingPage = () => {
         if (e.target.files)
           dispatch(LoadingPageAction.loadAndParseDate(e.target.files))
       }}/>
-    <button className='create-export' onClick={() => {
-      dispatch(LoadingPageAction.createLoading(true))
-      const text = csvFromMainData(mainData, period)
-      const result = text ? prepareDataForDownload(text) : ''
-      setDownloadData(result)
-      dispatch(LoadingPageAction.createLoading(false))
-    }}>
-      Экспорт в csv
-    </button>
-    {downloadDta ? <a className="termo-map" download="termo_map.csv" href={downloadDta} ref={aref}>
-      termo_map
-    </a> : null}
+      <ExportToCSV csvFrom={() => csvFromMainData(mainData, period)} /> 
     <div className="files-table">
       {filesMetaData.length ? <div className={cn('table__row', 'header')}>
         <div>Имя файла</div>
