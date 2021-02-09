@@ -21,8 +21,8 @@ export const ExportToCSV: React.FC<Props> = ({csvFrom, fileName, enable}) => {
     }}>
       Экспорт в csv
     </button>
-    {downloadDta ? <a className="termo-map" download="termo_map.csv" href={downloadDta} ref={aref}>
-      {fileName}
+    {downloadDta ? <a className="termo-map" download={`${fileName}.csv`} href={downloadDta} ref={aref}>
+      {`${fileName}.csv`}
     </a> : null}
   </div>
 }

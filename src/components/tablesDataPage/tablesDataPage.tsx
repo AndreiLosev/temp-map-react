@@ -22,8 +22,10 @@ export const TablesDataPage: React.FC = () => {
       maxPeriod={loadingPage.period}
       setPeriod={(dateTime, type) => dispatch(TableDataAction.createSetPeriod(dateTime, type))}
       calculate={() => {
+        const pseudonyms = loadingPage.filesMetaData
+          .reduce((acc, i) => ({...acc, [i.fileName]: i.pseudonym}), {} as {[x: string]: string})
         dispatch(TableDataAction.createCalculate(
-          loadingPage.mainData, tablesDataPage.period, loadingPage.filesMetaData.map(i => i.pseudonym)
+          loadingPage.mainData, tablesDataPage.period, pseudonyms,
         ))}
       }
     />

@@ -40,7 +40,7 @@ export class TableDataAction {
 
 
   static createCalculate = (
-    mainData: MainData, period: {start: number, end: number}, pseudonyms: string[]
+    mainData: MainData, period: {start: number, end: number}, pseudonyms: {[point: string]: string}
   ): AppAction => async dispatch => {
     dispatch(TableDataAction.createShowLoading(true))
     const [extremums, absExtremum] = await new Promise<[Extremums, AbsExtremum]>(resilve => {
@@ -51,7 +51,7 @@ export class TableDataAction {
         const maxH = getExtremun(mainData, period, 'humidity', 'max', pseudonyms)
         const midH = getMidleValue(mainData, 'humidity', period, pseudonyms)
         const minH = getExtremun(mainData, period, 'humidity', 'min', pseudonyms)
-        const extremums = pseudonyms.reduce((acc, pseudonym) => {
+        const extremums = Object.values(pseudonyms).reduce((acc, pseudonym) => {
           return {...acc, [pseudonym]: {
             temperature: {
               min: minT[pseudonym],
@@ -68,7 +68,7 @@ export class TableDataAction {
         const absMaxT = getAbsoluteExtremum(maxT, 'max')
         const absMidTMax = getAbsoluteExtremum(midT, 'max')
         const absTMid = roundIn10(
-          Object.values(midT).reduce((acc, item) => acc + item.value, 0) / pseudonyms.length,
+          Object.values(midT).reduce((acc, item) => acc + item.value, 0) / Object.values(pseudonyms).length,
         )
         const absMidTmin = getAbsoluteExtremum(midT, 'min')
         const absMinT = getAbsoluteExtremum(minT, 'min')
@@ -76,7 +76,7 @@ export class TableDataAction {
         const absMaxH = getAbsoluteExtremum(maxH, 'max')
         const absMidHMax = getAbsoluteExtremum(midH, 'max')
         const absHMid = roundIn10(
-          Object.values(midH).reduce((acc, item) => acc + item.value, 0) / pseudonyms.length,
+          Object.values(midH).reduce((acc, item) => acc + item.value, 0) / Object.values(pseudonyms).length,
         )
         const absMidHMin = getAbsoluteExtremum(midH, 'min')
         const absMinH = getAbsoluteExtremum(minH, 'min')

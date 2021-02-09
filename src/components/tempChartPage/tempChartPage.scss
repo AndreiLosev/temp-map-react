@@ -1,7 +1,9 @@
 .tempChartData {
   display: flex;
+  flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  width: 98%;
 }
 
 .add_button {
@@ -10,6 +12,9 @@
   font-size: 20px;
   width: 45px;
   height: 45px;
+  position: fixed;
+  left: 0px;
+  margin: 15px;
   @media print {
     display: none;
   }

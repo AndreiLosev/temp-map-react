@@ -19,7 +19,3 @@ export const myDatePars = (date: string): [Year, Munth, Day, Hours, Minuts] => {
 export const roundIn10 = (value: number) => {
   return Math.round(value * 10) / 10
 }
-
-export const promisifySyncFun = (calbek: (...values: any) => any, ...params: any) => new Promise((resolve, _) => {
-  setTimeout(() => resolve(calbek.apply(undefined, params)))
-})

@@ -9,9 +9,11 @@ type Props = {
   maxPeriod: {start: number, end: number},
   setPeriod: (dateTime: number, type: 'start' | 'end') => void,
   calculate: () => void,
+  step?: number,
+  setStep?: (e: React.ChangeEvent<HTMLInputElement>) => void,
 }
 
-export const SetPeriodAndCalc: React.FC<Props> = ({ start, end, maxPeriod, setPeriod, calculate }) => {
+export const SetPeriodAndCalc: React.FC<Props> = ({ start, end, maxPeriod, setPeriod, calculate, step=0, setStep }) => {
   const refStart = React.useRef<HTMLInputElement>(null)
   const refEnd = React.useRef<HTMLInputElement>(null)
   const [periodS, setPeriodS] = React.useState({start: '', end: ''})
@@ -55,6 +57,13 @@ export const SetPeriodAndCalc: React.FC<Props> = ({ start, end, maxPeriod, setPe
       value={periodS.end}
       onChange={setAndValidPeriod('end')}
     />
+    {step ? <span>step</span> : null}
+    {step ? <input
+      type="text" className="period"
+      value={step}
+      onChange={setStep}
+    /> : null}
+
     <button className="calculate" onClick={() => {
       if (start < maxPeriod.start) return alert('start очень маленький')
       if (end > maxPeriod.end) return alert('end очень большой')

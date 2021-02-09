@@ -1,4 +1,8 @@
 .ChartT {
-  width: 267mm;
+  width: 95%;
+  @media print {
+    width: 267mm; 
+  }
   height: 175mm;
+  page-break-before: always;
 }

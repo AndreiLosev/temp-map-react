@@ -55,8 +55,8 @@ export const getPeriod = (data: MainData) => {
 
 export const findByMainData = (data: Map<IntDate, MainItem>, key: number) => {
   const keyInt = key
-  const simleResult = data.get(keyInt)
-  if (simleResult) return simleResult
+  const simpleResult = data.get(keyInt)
+  if (simpleResult) return simpleResult
   const keys = Array.from(data.keys())
   if (keys[0] > keyInt) throw new Error('fun findByMainData: key is vary litle')
   if (keys[keys.length - 1] < keyInt) throw new Error('fun findByMainData: key is vary big')
@@ -86,15 +86,15 @@ export const binFind = (data: number[], target: number) => {
 
 export const getExtremun = (
   mainData: MainData, period: {start: number, end: number},
-  param: valueType, mod: funMode, pseudonyms: string[],
+  param: valueType, mod: funMode, pseudonyms: {[point: string]: string},
 ) => {
   const points = Object.keys(mainData)
   const more = (a: number, b: number) => a > b
   const les = (a: number, b: number) => a < b
   const condition = (mod === 'max') ? more : les
-  return points.reduce((acc, point, i) => {
+  return points.reduce((acc, point) => {
     const data = mainData[point]
-    const pseudonym = pseudonyms[i]
+    const pseudonym = pseudonyms[point]
     const keys = Array.from(data.keys())
     const start = getStartPoint(period.start, keys)
     const step = keys[1] - keys[0]
@@ -114,12 +114,12 @@ export const getExtremun = (
 
 export const getMidleValue = (
   mainData: MainData, param: 'temperature' | 'humidity',
-  period: {start: number, end: number}, pseudonyms: string[],
+  period: {start: number, end: number}, pseudonyms: {[point: string]: string},
 ) => {
   const points = Object.keys(mainData)
-  return points.reduce((acc, point, i) => {
+  return points.reduce((acc, point) => {
     const data = new Map(mainData[point].entries())
-    const pseudonym = pseudonyms[i]
+    const pseudonym = pseudonyms[point]
     for (let key of Array.from(data.keys())) {
       if (key < period.start) data.delete(key)
       if (key > period.end) data.delete(key)
@@ -164,25 +164,23 @@ const getStartPoint = <T>(periodStart: T, points: T[]) => {
 }
 
 export const createChartData = (
-  mainData: MainData, period: {start: number, end: number}, step: number, param: valueType, pseudonyms: string[],
+  mainData: MainData, period: {start: number, end: number}, step: number,
+  param: valueType, pseudonyms: {[point: string]: string},
 ) => {
   const points = Object.keys(mainData)
-  return points.map((point, i) => {
+  return points.map((point) => {
     const newMap = new Map(mainData[point].entries())
-    for (let key of Array.from(newMap.keys())) {
-      if (key < period.start) newMap.delete(key)
-      if (key > period.end) newMap.delete(key)
-    }
-    const resultX = [] as number[]
-    const resultY = [] as string[]
+    const resultX = [] as string[]
+    const resultY = [] as number[]
+    
     for (let i = period.start; i <= period.end; i += step) {
-      resultY.push(new Date(i).toLocaleString())
-      resultX.push(findByMainData(newMap, i)[param])
+      resultX.push(new Date(i).toLocaleString())
+      resultY.push(findByMainData(newMap, i)[param])
     }
     return {
       x: resultX,
       y: resultY,
-      name: pseudonyms[i],
+      name: pseudonyms[point],
     }
   })
 }
