@@ -2,6 +2,9 @@
   @media print {
     display: none;
   }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .chartData {
@@ -12,7 +15,9 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
   margin: 5px;
+  flex-wrap: wrap;
   @media print {
     display: none;
   }
@@ -22,10 +27,10 @@
     align-items: center;
     cursor: pointer;
     :nth-child(1) {
-      margin: 3px;
+      margin: 4px;
     }
     :nth-child(2) {
-      margin: 3px;
+      margin-right: 15px;
     }
   }
 }

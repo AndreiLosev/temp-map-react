@@ -1,37 +1,37 @@
 import {Reducer} from 'redux'
 
-export class chartActionT {
-  static ADD_CHART = 'ADD_CHART' as const
-  static SET_PERIOD = 'SET_PERIOD' as const
-  static GET_CHART_DATA = 'GET_CHART_DATA' as const
-  static UPDATE_POINTS = 'UPDATE_POINTS' as const
-  static SET_STEP = 'SET_STEP' as const
+export class chartHActionT {
+  static ADD_CHART = 'ADD_CHART_H' as const
+  static SET_PERIOD = 'SET_PERIOD_H' as const
+  static GET_CHART_DATA = 'GET_CHART_DATA_H' as const
+  static UPDATE_POINTS = 'UPDATE_POINTS_H' as const
+  static SET_STEP = 'SET_STEP_H' as const
 }
 
-export class chartAction {
+export class chartHAction {
   static createAddChart = (period: {start: number, end: number}, points: {[point: string]: string}) =>
-    ({ type: chartActionT.ADD_CHART, pyload: {period, points} })
+    ({ type: chartHActionT.ADD_CHART, pyload: {period, points} })
 
   static createSetPeriod = (value: number, type: 'start' | 'end', index: number) =>
-    ({ type: chartActionT.SET_PERIOD, pyload: {value, type, index} })
+    ({ type: chartHActionT.SET_PERIOD, pyload: {value, type, index} })
   
   static createGetChaerData = (chartData: {x: string[], y: number[], name: string}[], index: number) =>
-    ({ type: chartActionT.GET_CHART_DATA, pyload:  {chartData, index}})
+    ({ type: chartHActionT.GET_CHART_DATA, pyload:  {chartData, index}})
   
 
   static createSetStep = (step: number, index: number) =>
-    ({ type: chartActionT.SET_STEP, pyload: {step, index} })
+    ({ type: chartHActionT.SET_STEP, pyload: {step, index} })
 
   static createUpdatePoints = (points: {[point: string]: string}, index: number) =>
-    ({ type: chartActionT.UPDATE_POINTS, pyload: {points, index} })
+    ({ type: chartHActionT.UPDATE_POINTS, pyload: {points, index} })
 }
 
 type Action = 
-  | ReturnType<typeof chartAction.createAddChart>
-  | ReturnType<typeof chartAction.createSetPeriod>
-  | ReturnType<typeof chartAction.createGetChaerData>
-  | ReturnType<typeof chartAction.createUpdatePoints>
-  | ReturnType<typeof chartAction.createSetStep>
+  | ReturnType<typeof chartHAction.createAddChart>
+  | ReturnType<typeof chartHAction.createSetPeriod>
+  | ReturnType<typeof chartHAction.createGetChaerData>
+  | ReturnType<typeof chartHAction.createUpdatePoints>
+  | ReturnType<typeof chartHAction.createSetStep>
 
 const initState = {
   charts: [] as {
@@ -42,11 +42,11 @@ const initState = {
   }[],
 }
 
-type ChaetState = typeof initState
+type ChartHState = typeof initState
 
-export const chartReduser: Reducer<ChaetState, Action> = (state=initState, action) => {
+export const chartHReduser: Reducer<ChartHState, Action> = (state=initState, action) => {
   switch (action.type) {
-    case chartActionT.ADD_CHART:
+    case chartHActionT.ADD_CHART:
       const newCharts = state.charts.concat([{
         period: action.pyload.period,
         points: action.pyload.points,
@@ -54,25 +54,25 @@ export const chartReduser: Reducer<ChaetState, Action> = (state=initState, actio
         step: 15,
       }])
       return {...state, charts: newCharts}
-    case chartActionT.SET_PERIOD:
+    case chartHActionT.SET_PERIOD:
       return {...state, charts: state.charts.map((item, i) => {
         if (i === action.pyload.index)
           return {...item, period: {...item.period, [action.pyload.type]: action.pyload.value}}
         return item
       })}
-    case chartActionT.GET_CHART_DATA:
+    case chartHActionT.GET_CHART_DATA:
       return {...state, charts: state.charts.map((item, i) => {
         if (i === action.pyload.index)
           return {...item, chartData: action.pyload.chartData}
         return item
       })}
-    case chartActionT.SET_STEP:
+    case chartHActionT.SET_STEP:
       return {...state, charts: state.charts.map((item, i) => {
         if (i === action.pyload.index) 
           return {...item, step: action.pyload.step > 5 ? action.pyload.step : 5}
         return item
       })}
-    case chartActionT.UPDATE_POINTS:
+    case chartHActionT.UPDATE_POINTS:
       return {...state, charts: state.charts.map((item, i) => {
         if (i === action.pyload.index)
           return {...item, points: action.pyload.points}

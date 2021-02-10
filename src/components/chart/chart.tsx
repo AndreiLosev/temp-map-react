@@ -13,9 +13,12 @@ type Props = {
 
 export const Chart: React.FC<Props> = ({data, name}) => {
   const chartRef = React.useRef<HTMLDivElement>(null)
+  const layout: Partial<Plotly.Layout> = {
+    title: name,
+  }
   React.useEffect(() => {
     if (chartRef.current instanceof HTMLDivElement) {
-      Plotly.newPlot(chartRef.current, data, {title: name})
+      Plotly.newPlot(chartRef.current, data, layout)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chartRef.current])

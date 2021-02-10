@@ -174,7 +174,9 @@ export const createChartData = (
     const resultY = [] as number[]
     
     for (let i = period.start; i <= period.end; i += step) {
-      resultX.push(new Date(i).toLocaleString())
+      const strDate = new Date(i).toLocaleString().replace(/.20\d\d,/, '')
+
+      resultX.push(strDate.slice(0, strDate.length - 3))
       resultY.push(findByMainData(newMap, i)[param])
     }
     return {
