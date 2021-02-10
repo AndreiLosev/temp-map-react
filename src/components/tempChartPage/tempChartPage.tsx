@@ -19,7 +19,7 @@ export const TempChartPage: React.FC<{}> = () => {
       +
     </button>
     <div className="Charts-Array">
-      {charts.map((_, i) => <ChartData index={i} chartType="Температура" key={i.toString()}/>)}
+      {charts.map((_, i) => <ChartData index={i} chartType="Температура" key={Date.now().toString()}/>)}
     </div>
   </div>
 }

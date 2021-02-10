@@ -167,7 +167,7 @@ export const createChartData = (
   mainData: MainData, period: {start: number, end: number}, step: number,
   param: valueType, pseudonyms: {[point: string]: string},
 ) => {
-  const points = Object.keys(mainData)
+  const points = Object.keys(pseudonyms)
   return points.map((point) => {
     const newMap = new Map(mainData[point].entries())
     const resultX = [] as string[]

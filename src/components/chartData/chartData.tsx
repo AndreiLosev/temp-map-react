@@ -15,7 +15,7 @@ type Props = {
 export const ChartData: React.FC<Props> = ({index, chartType}) => {
   const dispatch = useDispatch()
   const {period, mainData, filesMetaData} = useSelector((state: AppState) => state.loadingPage)
-  const {period:{start, end}, step, chartData} = useSelector((state: AppState) => state.tempCharts.charts[index])
+  const {period:{start, end}, step, chartData, points} = useSelector((state: AppState) => state.tempCharts.charts[index])
   const OneMinut = 60 * 1000
   return <div className="chartData">
     <div className="chartData-header">
@@ -36,6 +36,18 @@ export const ChartData: React.FC<Props> = ({index, chartType}) => {
           chartAction.createSetStep(parseInt(e.target.value), index),
         )}
       />
+    </div>
+    <div className="points-area">
+      {filesMetaData.map(point => <div key={point.fileName} onClick={() => {
+          const check = points.includes(point.pseudonym)
+          if (check) 
+            dispatch(chartAction.createUpdatePoints(points.filter(i => i !== point.pseudonym), index))
+          else
+            dispatch(chartAction.createUpdatePoints(points.concat([point.pseudonym]), index))
+        }}>
+        <span>{point.pseudonym}</span>
+        <input type="checkbox" checked={points.includes(point.pseudonym)} onChange={e => e.preventDefault()}/>
+      </div>)}
     </div>
     <Chart data={chartData} name={chartType}/>
   </div>

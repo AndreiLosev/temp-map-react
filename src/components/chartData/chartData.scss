@@ -7,3 +7,25 @@
 .chartData {
   width: 100%;
 }
+
+.points-area {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 5px;
+  @media print {
+    display: none;
+  }
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    :nth-child(1) {
+      margin: 3px;
+    }
+    :nth-child(2) {
+      margin: 3px;
+    }
+  }
+}
