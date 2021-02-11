@@ -11,6 +11,7 @@ export class TableDataActionT {
   static SHOW_LOADING = 'SHOW_LOADING' as const
   static SET_PERIOD = 'SET_PERIOD' as const 
   static CALCULATE = 'CALCULATE' as const
+  static SET_POINTS_IN_SPACE = 'SET_POINTS_IN_SPACE' as const 
 }
 
 type TableDataType = {
@@ -36,8 +37,8 @@ export class TableDataAction {
   static createSetPeriod = (value: number, type: 'start' | 'end') =>
     ({ type: TableDataActionT.SET_PERIOD, pyload: {value, type} })
   
-
-
+  static createSetPointsInSpace = (dataСube: {[point: string]: {x: number, y: number, z: number}}) =>
+    ({ type: TableDataActionT.SET_POINTS_IN_SPACE, pyload: dataСube })
 
   static createCalculate = (
     mainData: MainData, period: {start: number, end: number}, pseudonyms: {[point: string]: string}
@@ -115,6 +116,7 @@ type Action =
   | ReturnType<typeof TableDataAction.createShowLoading>
   | ReturnType<typeof TableDataAction.createAbsoluteExtrmum>
   | ReturnType<typeof TableDataAction.createSetPeriod>
+  | ReturnType<typeof TableDataAction.createSetPointsInSpace>
 
 export type Extremums = {[point: string]: {
   temperature: {
@@ -157,6 +159,7 @@ const initState = {
     end: 0,
   },
   loading: false,
+  dataСube: {} as {[point: string]: {x: number, y: number, z: number}},
 }
 
 type tableDataState = typeof initState
@@ -171,6 +174,8 @@ export const dateTableReduser: Reducer<tableDataState, Action> = (state=initStat
       return {...state, loading: action.pyload}
     case TableDataActionT.GET_ABSOLUTE_EXTREMUM:
       return {...state, absExtremum: action.pyload}
+    case TableDataActionT.SET_POINTS_IN_SPACE:
+      return {...state, dataСube: action.pyload}
     default:
       return state
   }
