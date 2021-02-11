@@ -186,3 +186,19 @@ export const createChartData = (
     }
   })
 }
+
+export const pointsPositionForPlot3D = (points: {[point: string]: {x: number, y: number, z: number}}) => {
+  const result = {
+    x: [] as number[],
+    y: [] as number[],
+    z: [] as number[],
+    text: [] as string[],
+  }
+  Object.keys(points).forEach(point => {
+    result.x.push(points[point].x)
+    result.y.push(points[point].y)
+    result.z.push(points[point].z)
+    result.text.push(point)
+  })
+  return result
+}

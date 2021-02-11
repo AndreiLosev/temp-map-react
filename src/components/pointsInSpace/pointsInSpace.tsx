@@ -5,17 +5,20 @@ import {AppState} from '../../redusers'
 import {TableDataAction} from '../../redusers/tableDataReduser'
 import Inputmask from 'inputmask'
 import {Chart3D} from '../chart3d/chart3d'
+import {pointsPositionForPlot3D} from '../../utils/mainData'
 
 export const PointsInSpace = () => {
   const dispatch = useDispatch()
   const filesMetaData = useSelector((state: AppState) => state.loadingPage.filesMetaData)
   const dataCube = useSelector((state: AppState) => state.tableData.dataСube)
   React.useEffect(() => {
-    const value = {x: 0, y: 0, z: 0}
-    const dataCube = filesMetaData.map(i => i.pseudonym)
+    if (Object.keys(dataCube).length === 0) {
+      const value = {x: 0, y: 0, z: 0}
+      const newDataCube = filesMetaData.map(i => i.pseudonym)
       .reduce((acc, item) => ({...acc, [item]: value}), {} as {[point: string]: typeof value})
-    dispatch(TableDataAction.createSetPointsInSpace(dataCube))
-  }, [dispatch, filesMetaData])
+      dispatch(TableDataAction.createSetPointsInSpace(newDataCube))
+    }
+  }, [dataCube, dispatch, filesMetaData])
   React.useEffect(() => {
     const xMask = new Inputmask('x: 99999')
     const yMask = new Inputmask('y: 99999')
@@ -50,6 +53,15 @@ export const PointsInSpace = () => {
         onChange={editDateCube(i.pseudonym, 'z')}
       />
     </div>)}
-    <Chart3D />
+    {Object.keys(dataCube).length
+      ? <Chart3D
+        data={[pointsPositionForPlot3D(dataCube)]}
+        type="scatter3d"
+        mode="text+markers"
+        title="Точки замеров"
+        height={800}
+        width={1280}
+      />
+      : null}
   </div>
 }

@@ -10,7 +10,8 @@ import {LoadingPage} from './components/loadingPage/loadingPage'
 import {TablesDataPage} from './components/tablesDataPage/tablesDataPage'
 import {TempChartPage} from './components/tempChartPage/tempChartPage'
 import {HumChartPage} from './components/humChartPage/humChartPage'
-import {Temp3DChart} from './components/temp3DChart/temp3DChart'
+import {Temp3DChartPage} from './components/temp3DChartPage/temp3DChartPage'
+import {Hum3DChartPage} from './components/hum3DChartPage/hum3DChartPage'
 
 
 const store = createStore(rootReduser, applyMiddleware(thunk))
@@ -24,8 +25,8 @@ const App = () => {
       {tablesData ? <TablesDataPage /> : null}
       {tempChart ? <TempChartPage /> : null}
       {humChart ? <HumChartPage /> : null}
-      {temp3DChart ? <Temp3DChart /> : null}
-      {hun3DChart ? 'hun3DChart' : null}
+      {temp3DChart ? <Temp3DChartPage /> : null}
+      {hun3DChart ? <Hum3DChartPage /> : null}
     </main>
 
   </Provider>

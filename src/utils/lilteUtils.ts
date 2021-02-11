@@ -19,3 +19,15 @@ export const myDatePars = (date: string): [Year, Munth, Day, Hours, Minuts] => {
 export const roundIn10 = (value: number) => {
   return Math.round(value * 10) / 10
 }
+
+export const comparate2Arr = <T>(arr1: T[], arr2: T[]) => {
+  console.log(arr1, arr2)
+  if (arr1.length === 0) return false
+  if (arr2.length === 0) return false
+  let outPut = true
+  arr1.forEach((item, i) => {
+    if (item !== arr2[i]) 
+      outPut = false
+  })
+  return outPut
+}
