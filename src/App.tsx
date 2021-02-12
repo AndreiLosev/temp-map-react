@@ -11,7 +11,7 @@ import {TablesDataPage} from './components/tablesDataPage/tablesDataPage'
 import {TempChartPage} from './components/tempChartPage/tempChartPage'
 import {HumChartPage} from './components/humChartPage/humChartPage'
 import {Temp3DChartPage} from './components/temp3DChartPage/temp3DChartPage'
-import {Hum3DChartPage} from './components/hum3DChartPage/hum3DChartPage'
+import {Hum3DChartPage} from './components/hum3DChartPage /hum3DChartPage'
 
 
 const store = createStore(rootReduser, applyMiddleware(thunk))
