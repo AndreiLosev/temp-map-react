@@ -12,6 +12,7 @@ type Props = {
     text: string[],
   }[]
   title: string,
+  conlors?: string[]
   type: Plotly.PlotType,
   mode?: 'lines'
   | 'markers'
@@ -33,11 +34,22 @@ type Props = {
   
 }
 
-export const Chart3D: React.FC<Props> = ({data, title, type, mode, width, height}) => {
+export const Chart3D: React.FC<Props> = ({data, title, type, mode, width, height, conlors}) => {
   const traces: Plotly.Data[] = data.map(i => ({
       ...i,
       type: type,
       mode: mode,
+      marker: {
+        color: conlors ? conlors : i.x.map(() => '#4cca8c'),
+        opacity: 0.80,
+        size: 20,
+        symbol: 'circle',
+      },
+      textfont: {
+        size: 35,
+        family: "Times New Roman",
+      },
+      textposition: 'middle center',
   }))
   return <Plot
     data={traces}

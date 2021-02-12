@@ -20,14 +20,13 @@ export const roundIn10 = (value: number) => {
   return Math.round(value * 10) / 10
 }
 
-export const comparate2Arr = <T>(arr1: T[], arr2: T[]) => {
-  console.log(arr1, arr2)
-  if (arr1.length === 0) return false
-  if (arr2.length === 0) return false
-  let outPut = true
-  arr1.forEach((item, i) => {
-    if (item !== arr2[i]) 
-      outPut = false
-  })
-  return outPut
+export const temperature2color = (colors: string[], minT: number, maxT: number) => {
+  const delta = (maxT - minT) / (colors.length - 1)
+  const result = new Map<number, string>()
+  let currentTemp = minT
+  for (let color of colors) {
+    result.set(roundIn10(currentTemp), color)
+    currentTemp += delta
+  }
+  return result
 }

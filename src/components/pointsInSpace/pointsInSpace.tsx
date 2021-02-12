@@ -6,6 +6,8 @@ import {TableDataAction} from '../../redusers/tableDataReduser'
 import Inputmask from 'inputmask'
 import {Chart3D} from '../chart3d/chart3d'
 import {pointsPositionForPlot3D} from '../../utils/mainData'
+import { ExportToCSV } from '../exportToCSV/exportToCSV'
+import { loadFile } from '../../utils/loadUpload'
 
 export const PointsInSpace = () => {
   const dispatch = useDispatch()
@@ -18,7 +20,8 @@ export const PointsInSpace = () => {
       .reduce((acc, item) => ({...acc, [item]: value}), {} as {[point: string]: typeof value})
       dispatch(TableDataAction.createSetPointsInSpace(newDataCube))
     }
-  }, [dataCube, dispatch, filesMetaData])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filesMetaData])
   React.useEffect(() => {
     const xMask = new Inputmask('x: 99999')
     const yMask = new Inputmask('y: 99999')
@@ -38,6 +41,14 @@ export const PointsInSpace = () => {
       ))
   }
   return <div className="points-in-space">
+    <ExportToCSV csvFrom={() => JSON.stringify(dataCube)} fileName={'savePoints.json'} enable={true} />
+    <input type="file" onChange={async e => {
+      const file = e.target.files
+      if (file) {
+        const result = await loadFile(file[0])
+        dispatch(TableDataAction.createSetPointsInSpace((JSON.parse(result[1]))))
+      }
+    }}/>
     {filesMetaData.map(i => <div key={i.fileName} className="data-Cube-item">
       <span>{i.pseudonym}</span>
       <input type="text" className="position-point xInput"
@@ -59,8 +70,8 @@ export const PointsInSpace = () => {
         type="scatter3d"
         mode="text+markers"
         title="Точки замеров"
-        height={800}
-        width={1280}
+        height={1024}
+        width={1024}
       />
       : null}
   </div>

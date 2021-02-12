@@ -1,4 +1,5 @@
-import {myDatePars, roundIn10} from './lilteUtils'
+import { Extremums } from '../redusers/tableDataReduser'
+import {myDatePars, roundIn10, temperature2color} from './lilteUtils'
 
 export type MainItem = {
   temperature: number,
@@ -202,3 +203,39 @@ export const pointsPositionForPlot3D = (points: {[point: string]: {x: number, y:
   })
   return result
 }
+
+export const colorsArr = [
+  '#8504b1', '#6900c2', '#4d12d1', '#3026de', '#0438ec', '#0048f9', '#006ef9',
+  '#0092f8', '#00b4f6', '#00d6f6', '#00faf9', '#00fce3', '#00fdcf', '#00fdba',
+  '#00fea6', '#22ff72', '#44ff53', '#64ff36', '#85ff19', '#b7ff00', '#c9ff00',
+  '#dbff00', '#edff00', '#fefe00', '#fef100', '#fee300', '#ffd600', '#ffca00',
+  '#ffb900', '#ff9200', '#ff6d00', '#ff4700', '#ff2000', '#ff0000', '#fb0000',
+  '#e80000', '#d60000', '#c30000', '#af0000',
+]
+
+export const findColorsFromValue = (data: Map<number, string>, key: number) => {
+  const keyInt = key
+  const simpleResult = data.get(keyInt)
+  if (simpleResult) return simpleResult
+  const keys = Array.from(data.keys())
+  if (keys[0] > keyInt) throw new Error('fun findByMainData: key is vary litle')
+  if (keys[keys.length - 1] < keyInt) throw new Error('fun findByMainData: key is vary big')
+  const key1 = binFind(keys, keyInt)[1]
+  if (!data.get(key1)) new Error('fun findByMainData: bin search error')
+  return data?.get(key1) as string
+}
+
+export const getChart3dData = (
+  pointsPosition: ReturnType<typeof pointsPositionForPlot3D>,
+  param: valueType, mode: funMode, maxValue: number,
+  minValue: number, extremum: Extremums,
+) => {
+  const points = pointsPosition.text
+  const values = points.map(point => extremum[point][param][mode].value)
+  const pointsAndValues = points.map(point => `${extremum[point][param][mode].value}`)
+  const colorsValuesMap = temperature2color(colorsArr, minValue , maxValue)
+  const positionData = {...pointsPosition, text: pointsAndValues}
+  const colorsValues = points.map((_, i) => findColorsFromValue(colorsValuesMap, values[i]))
+  return {positionData, colorsValues, colorsValuesMap}
+}
+

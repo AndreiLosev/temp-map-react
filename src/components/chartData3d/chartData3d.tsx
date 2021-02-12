@@ -2,6 +2,10 @@ import React from 'react'
 import './chartData3d.scss'
 import Inputmask from 'inputmask'
 import {Chart3D} from '../chart3d/chart3d'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppState } from '../../redusers'
+import {chart3dTAction} from '../../redusers/chart3dTReduser'
+import {pointsPositionForPlot3D} from '../../utils/mainData'
 
 type Props = {
   index: number,
@@ -15,22 +19,68 @@ export const ChartData3d: React.FC<Props> = ({index, chartType}) => {
     if (datTimeinput.current)
       mask.mask(datTimeinput.current)
   }, [])
-  
+  const {dataСube, extremums} = useSelector((state: AppState) => state.tableData)
+  const {extrmum, selectData, chart3dData} = useSelector((state: AppState) => state.temp3dCharts.charts3D[index])
+  const dispatch = useDispatch()
+  const colorScale = Array.from(chart3dData.colorsValuesMap.entries())
+  colorScale.reverse()
   return <div className="chartData3d">
     <div className="chartData3d-header">
-      <div className="select-data">
+      {/* <div className="select-data">
         <input type="checkbox" className="selec-data-input"/>
         <input type="checkbox" className="selec-data-input"/>
-      </div>
-      <div className="target-data-extremum">
-        <input type="checkbox" className="target-data-extrmum-item"/>
-        <input type="checkbox" className="target-data-extrmum-item"/>
-        <input type="checkbox" className="target-data-extrmum-item"/>
-      </div>
-      <input type="text" className="target-data-time" ref={datTimeinput}/>
+      </div> */}
+      {selectData === 'extrmum' ? <div className="target-data-extremum">
+        <div className="target-data-extrmum-item"
+          onClick={() => dispatch(chart3dTAction.createSetExtremum('min', index))}>
+          <span>min</span>
+          <input type="checkbox"
+            checked={extrmum === 'min'}
+            onChange={e => e.preventDefault()}
+          />
+        </div>
+        <div className="target-data-extrmum-item"
+          onClick={() => dispatch(chart3dTAction.createSetExtremum('mid', index))}>
+          <span>mid</span>
+          <input type="checkbox"
+            checked={extrmum === 'mid'}
+            onChange={e => e.preventDefault()}
+          />
+        </div>
+        <div className="target-data-extrmum-item"
+          onClick={() => dispatch(chart3dTAction.createSetExtremum('max', index))}>
+          <span>max</span>
+          <input type="checkbox"
+            checked={extrmum === 'max'}
+            onChange={e => e.preventDefault()}
+          />
+        </div>
+      </div> : null}
+      {selectData === 'time' ? <input type="text" className="target-data-time" ref={datTimeinput}/> : null}
+      <button className="calculate"
+        onClick={() => {
+          const values = Object.values(extremums).map(item => item.temperature[extrmum].value)
+          const maxValue = Math.max.apply(null, values)
+          const minValue = Math.min.apply(null, values)
+          dispatch(chart3dTAction.createGet3dChartData(
+            pointsPositionForPlot3D(dataСube), 'temperature', extrmum,
+            maxValue, minValue, extremums, index,
+          ))
+        }}
+      >
+        Calculate
+      </button>
     </div>
-    <Chart3D title='test' type='scatter3d' mode='text+markers' width={1750} height={1026}
-      data={[{ x: [0, 1, 2, 0], y: [0, 0, 1, 2], z: [0, 2, 0, 1], text: ['one', 'two', 'three', '444']}]}
-    />
+    <div className="chard-3d-result">
+      <Chart3D title={chartType} type='scatter3d' mode='text+markers' width={1024} height={1024}
+        data={[chart3dData.positionData]} conlors={chart3dData.colorsValues}
+      />
+      <div className="color-scale">
+        {colorScale.map(i => <div className="color-scale-item" key={i.toString()}>
+          <div style={{width: '30px', height: '15px', backgroundColor: i[1]}}></div>
+          <div>{i[0]}</div>
+        </div>)}
+      </div>
+    </div>
   </div>
 }

@@ -20,7 +20,7 @@ export const LoadingPage = () => {
       }}/>
       <ExportToCSV
         csvFrom={() => csvFromMainData(mainData, period)}
-        fileName={'Raf_data'}
+        fileName={'Raf_data.csv'}
         enable={Boolean(Object.keys(mainData).length)}
       /> 
     <div className="files-table">
