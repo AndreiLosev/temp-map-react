@@ -62,7 +62,7 @@ type Action =
   | ReturnType<typeof LoadingPageAction.createGetPeriod>
   | ReturnType<typeof LoadingPageAction.createRemoveDataIemt>
 
-type FileMetaData = {
+export type FileMetaData = {
   fileName: string,
   numberOfMeasurements: number,
   startMeasurements: IntDate,

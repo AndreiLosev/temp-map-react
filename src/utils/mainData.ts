@@ -1,5 +1,6 @@
 import { Extremums } from '../redusers/tableDataReduser'
 import {myDatePars, roundIn10, temperature2color} from './lilteUtils'
+import {FileMetaData} from '../redusers/loadingFileReduser'
 
 export type MainItem = {
   temperature: number,
@@ -238,4 +239,29 @@ export const getChart3dData = (
   const colorsValues = points.map((_, i) => findColorsFromValue(colorsValuesMap, values[i]))
   return {positionData, colorsValues, colorsValuesMap}
 }
+
+export const getChart3dDataFromTime = (
+  pointsPosition: ReturnType<typeof pointsPositionForPlot3D>,
+  param: valueType, mainData: MainData,
+  time: number, fileMetaData: FileMetaData[],
+) => {
+  const points = pointsPosition.text
+  const values = points.map(point => {
+  const index = (() => {
+    for (let i = 0; i < fileMetaData.length; i++) {
+      console.log(point, fileMetaData[i].pseudonym)
+      if (fileMetaData[i].pseudonym === point) return i
+    }
+    })()
+    console.log({index})
+    if (index === undefined) throw new Error('getChart3dDataFromTime no valid pseudinim')
+    return findByMainData(mainData[fileMetaData[index].fileName], time)[param]
+  })
+  const maxValue = Math.max.apply(null, values)
+  const minValue = Math.min.apply(null, values)
+  const colorsValuesMap = temperature2color(colorsArr, minValue , maxValue)
+  const positionData = {...pointsPosition, text: values.map(i => i.toString())}
+  const colorsValues = points.map((_, i) => findColorsFromValue(colorsValuesMap, values[i]))
+  return {positionData, colorsValues, colorsValuesMap}
+} 
 

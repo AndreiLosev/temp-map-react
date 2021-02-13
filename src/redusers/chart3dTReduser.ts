@@ -1,6 +1,4 @@
 import {Reducer} from 'redux'
-import {pointsPositionForPlot3D, valueType, funMode} from '../utils/mainData'
-import {Extremums} from './tableDataReduser'
 import {getChart3dData} from '../utils/mainData'
 
 export class chart3dTActionT {
@@ -13,24 +11,29 @@ export class chart3dTActionT {
 
 export class chart3dTAction {
 
-  static createAdd3dChart = () => ({ type: chart3dTActionT.ADD_3D_CHART })
+  static createAdd3dChart = (time: number) =>
+    ({ type: chart3dTActionT.ADD_3D_CHART, pyload: time })
 
   static createSetExtremum = (mode: 'min' | 'mid' | 'max', index: number) =>
     ({ type: chart3dTActionT.SET_EXTREMUM, pyload: {mode, index} })
 
-  static createGet3dChartData = (
-    pointsPosition: ReturnType<typeof pointsPositionForPlot3D>,
-    param: valueType, mode: funMode, maxValue: number,
-    minValue: number, extremum: Extremums, index: number,
-  ) => ({
+  static createSelectData = (data: 'time' | 'extrmum', index: number) =>
+    ({ type: chart3dTActionT.SELECT_DATA, pyload: {data, index} })  
+
+  static createSetTime = (dateTime: number, index: number) =>
+    ({ type: chart3dTActionT.SET_TIME, pyload: {dateTime, index} })
+
+  static createGet3dChartData = (chart3dData: ReturnType<typeof getChart3dData>, index: number) => ({
     type: chart3dTActionT.GET_3D_CHART_DATA,
-    pyload: {pointsPosition, param, mode, maxValue, minValue, extremum, index},
+    pyload: {chart3dData, index},
   })
 }
 
 type Action =
   | ReturnType<typeof chart3dTAction.createAdd3dChart>
   | ReturnType<typeof chart3dTAction.createSetExtremum>
+  | ReturnType<typeof chart3dTAction.createSelectData>
+  | ReturnType<typeof chart3dTAction.createSetTime>
   | ReturnType<typeof chart3dTAction.createGet3dChartData>
 
 const initState = {
@@ -48,7 +51,7 @@ export const chart3DReduser: Reducer<Chart3dState, Action> = (state=initState, a
   switch (action.type) {
     case chart3dTActionT.ADD_3D_CHART:
       const newCharts3D = [...state.charts3D, {
-        time: 0,
+        time: action.pyload,
         selectData: 'extrmum' as 'time' | 'extrmum',
         extrmum: 'min' as 'min' | 'mid' | 'max',
         chart3dData: {
@@ -65,16 +68,18 @@ export const chart3DReduser: Reducer<Chart3dState, Action> = (state=initState, a
         else return item
       })}
     case chart3dTActionT.GET_3D_CHART_DATA:
-      const newCharts3dData = getChart3dData(
-        action.pyload.pointsPosition,
-        action.pyload.param,
-        action.pyload.mode,
-        action.pyload.maxValue,
-        action.pyload.minValue,
-        action.pyload.extremum,
-      )
       return {...state, charts3D: state.charts3D.map((item, i) => {
-        if (i === action.pyload.index) return {...item, chart3dData: newCharts3dData}
+        if (i === action.pyload.index) return {...item, chart3dData: action.pyload.chart3dData}
+        else return item
+      })}
+    case chart3dTActionT.SELECT_DATA:
+      return {...state, charts3D: state.charts3D.map((item, i) => {
+        if(i === action.pyload.index) return {...item, selectData: action.pyload.data}
+        else return item
+      })}
+    case chart3dTActionT.SET_TIME:
+      return {...state, charts3D: state.charts3D.map((item, i) => {
+        if (i === action.pyload.index) return {...item, time: action.pyload.dateTime}
         else return item
       })}
     default:

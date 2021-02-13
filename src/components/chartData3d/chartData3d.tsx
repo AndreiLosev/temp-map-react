@@ -6,7 +6,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../../redusers'
 import {chart3dTAction} from '../../redusers/chart3dTReduser'
 import {chart3dTHAction} from '../../redusers/chart3dHReduser'
-import {pointsPositionForPlot3D} from '../../utils/mainData'
+import {getChart3dDataFromTime, pointsPositionForPlot3D} from '../../utils/mainData'
+import {myDatePars} from '../../utils/lilteUtils'
+import {getChart3dData} from '../../utils/mainData'
 
 type Props = {
   index: number,
@@ -18,22 +20,34 @@ export const ChartData3d: React.FC<Props> = ({index, chartType}) => {
   const typeState = chartType === 'Температура' ? 'temp3dCharts' : 'hum3dCharts'
   const typeValue = chartType === 'Температура' ? 'temperature' : 'humidity'
   const datTimeinput = React.useRef<HTMLInputElement>(null)
+  const {dataСube, extremums} = useSelector((state: AppState) => state.tableData)
+  const {extrmum, selectData, chart3dData, time} = useSelector((state: AppState) => state[typeState].charts3D[index])
+  const {period, mainData, filesMetaData} = useSelector((state: AppState) => state.loadingPage)
+  const [timeS, setTimeS] = React.useState('')
   React.useEffect(() => {
     const mask = new Inputmask('99.99.9999, 99:99')
     if (datTimeinput.current)
       mask.mask(datTimeinput.current)
-  }, [])
-  const {dataСube, extremums} = useSelector((state: AppState) => state.tableData)
-  const {extrmum, selectData, chart3dData} = useSelector((state: AppState) => state[typeState].charts3D[index])
+    if (timeS === '') setTimeS(new Date(time).toLocaleString())
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectData])
   const dispatch = useDispatch()
   const colorScale = Array.from(chart3dData.colorsValuesMap.entries())
   colorScale.reverse()
   return <div className="chartData3d">
-    <div className="chartData3d-header">
-      {/* <div className="select-data">
-        <input type="checkbox" className="selec-data-input"/>
-        <input type="checkbox" className="selec-data-input"/>
-      </div> */}
+    <div className="target-data-extremum">
+      <div className="select-data">
+        <div className="target-data-extrmum-item"
+          onClick={() => dispatch(typeAction.createSelectData('time', index))}>
+          <span>Time</span>
+          <input type="checkbox" onChange={e => e.preventDefault()} checked={selectData === 'time'}/>
+        </div>
+        <div className="target-data-extrmum-item"
+          onClick={() => dispatch(typeAction.createSelectData('extrmum', index))}>
+          <span>Extremum</span>
+          <input type="checkbox" onChange={e => e.preventDefault()} checked={selectData === 'extrmum'}/>
+        </div>
+      </div>
       {selectData === 'extrmum' ? <div className="target-data-extremum">
         <div className="target-data-extrmum-item"
           onClick={() => dispatch(typeAction.createSetExtremum('min', index))}>
@@ -60,16 +74,36 @@ export const ChartData3d: React.FC<Props> = ({index, chartType}) => {
           />
         </div>
       </div> : null}
-      {selectData === 'time' ? <input type="text" className="target-data-time" ref={datTimeinput}/> : null}
+      {selectData === 'time'
+        ? <input type="text" className="period" ref={datTimeinput} value={timeS}
+          onChange={e => {
+            const [Year, Munth, Day, Hours, Minuts] = myDatePars(e.target.value)
+            .map(i => i ? i : 0)
+          dispatch(typeAction.createSetTime(+new Date(Year, Munth, Day, Hours, Minuts), index))
+          setTimeS(e.target.value)
+          }}
+          />
+        : null}
       <button className="calculate"
         onClick={() => {
-          const values = Object.values(extremums).map(item => item[typeValue][extrmum].value)
-          const maxValue = Math.max.apply(null, values)
-          const minValue = Math.min.apply(null, values)
-          dispatch(typeAction.createGet3dChartData(
-            pointsPositionForPlot3D(dataСube), typeValue, extrmum,
-            maxValue, minValue, extremums, index,
-          ))
+          if (selectData === 'extrmum') {
+            const values = Object.values(extremums).map(item => item[typeValue][extrmum].value)
+            const maxValue = Math.max.apply(null, values)
+            const minValue = Math.min.apply(null, values)
+            const result = getChart3dData(
+              pointsPositionForPlot3D(dataСube), typeValue, extrmum,
+              maxValue, minValue, extremums,
+            )
+            dispatch(typeAction.createGet3dChartData(result, index)) 
+          } else if (selectData === 'time') {
+            if (time < period.start) return alert('time < start')
+            if (time > period.end) return alert('time > end')
+            const result = getChart3dDataFromTime(
+              pointsPositionForPlot3D(dataСube), typeValue,
+              mainData, time, filesMetaData,
+            )
+            dispatch(typeAction.createGet3dChartData(result, index))
+          }
         }}
       >
         Calculate
