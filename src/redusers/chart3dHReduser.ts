@@ -11,7 +11,8 @@ export class chart3dHActionT {
 
 export class chart3dTHAction {
 
-  static createAdd3dHChart = () => ({ type: chart3dHActionT.ADD_3D_CHART })
+  static createAdd3dChart = (time: number) =>
+    ({ type: chart3dHActionT.ADD_3D_CHART, pyload: time })
 
   static createSetExtremum = (mode: 'min' | 'mid' | 'max', index: number) =>
     ({ type: chart3dHActionT.SET_EXTREMUM, pyload: {mode, index} })
@@ -29,9 +30,11 @@ export class chart3dTHAction {
 }
 
 type Action =
-  | ReturnType<typeof chart3dTHAction.createAdd3dHChart>
-  | ReturnType<typeof chart3dTHAction.createSetExtremum>
-  | ReturnType<typeof chart3dTHAction.createGet3dChartData>
+| ReturnType<typeof chart3dTHAction.createAdd3dChart>
+| ReturnType<typeof chart3dTHAction.createSetExtremum>
+| ReturnType<typeof chart3dTHAction.createSelectData>
+| ReturnType<typeof chart3dTHAction.createSetTime>
+| ReturnType<typeof chart3dTHAction.createGet3dChartData>
 
 const initState = {
   charts3D: [] as {
@@ -48,7 +51,7 @@ export const chart3dHReduser: Reducer<Chart3dState, Action> = (state=initState, 
   switch (action.type) {
     case chart3dHActionT.ADD_3D_CHART:
       const newCharts3D = [...state.charts3D, {
-        time: 0,
+        time: action.pyload,
         selectData: 'extrmum' as 'time' | 'extrmum',
         extrmum: 'min' as 'min' | 'mid' | 'max',
         chart3dData: {
@@ -67,6 +70,16 @@ export const chart3dHReduser: Reducer<Chart3dState, Action> = (state=initState, 
     case chart3dHActionT.GET_3D_CHART_DATA:
       return {...state, charts3D: state.charts3D.map((item, i) => {
         if (i === action.pyload.index) return {...item, chart3dData: action.pyload.chart3dData}
+        else return item
+      })}
+    case chart3dHActionT.SELECT_DATA:
+      return {...state, charts3D: state.charts3D.map((item, i) => {
+        if(i === action.pyload.index) return {...item, selectData: action.pyload.data}
+        else return item
+      })}
+    case chart3dHActionT.SET_TIME:
+      return {...state, charts3D: state.charts3D.map((item, i) => {
+        if (i === action.pyload.index) return {...item, time: action.pyload.dateTime}
         else return item
       })}
     default:

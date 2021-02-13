@@ -222,8 +222,9 @@ export const findColorsFromValue = (data: Map<number, string>, key: number) => {
   if (keys[0] > keyInt) throw new Error('fun findByMainData: key is vary litle')
   if (keys[keys.length - 1] < keyInt) throw new Error('fun findByMainData: key is vary big')
   const key1 = binFind(keys, keyInt)[1]
-  if (!data.get(key1)) new Error('fun findByMainData: bin search error')
-  return data?.get(key1) as string
+  const result = data.get(key1)
+  if (result === undefined) new Error('fun findByMainData: bin search error')
+  return result as string
 }
 
 export const getChart3dData = (
@@ -249,11 +250,9 @@ export const getChart3dDataFromTime = (
   const values = points.map(point => {
   const index = (() => {
     for (let i = 0; i < fileMetaData.length; i++) {
-      console.log(point, fileMetaData[i].pseudonym)
       if (fileMetaData[i].pseudonym === point) return i
     }
     })()
-    console.log({index})
     if (index === undefined) throw new Error('getChart3dDataFromTime no valid pseudinim')
     return findByMainData(mainData[fileMetaData[index].fileName], time)[param]
   })

@@ -9,7 +9,7 @@ import {chart3dTHAction} from '../../redusers/chart3dHReduser'
 export const Hum3DChartPage = () => {
   const dispatch = useDispatch()
   const charts3D = useSelector((state: AppState) => state.hum3dCharts.charts3D)
-  const filesMetaData = useSelector((state: AppState) => state.loadingPage.filesMetaData)
+  const {filesMetaData, period} = useSelector((state: AppState) => state.loadingPage)
   return <div className="temp-3d-chart">
     <PointsInSpace />
     {charts3D.map((_, i) => <ChartData3d index={i} chartType='Влажность' key={i}/>)}
@@ -17,7 +17,7 @@ export const Hum3DChartPage = () => {
       className="add_button_3D"
       onClick={() => {
         if (filesMetaData.length) {
-          dispatch(chart3dTHAction.createAdd3dHChart())
+          dispatch(chart3dTHAction.createAdd3dChart(period.start))
         }
       }}>
       +
