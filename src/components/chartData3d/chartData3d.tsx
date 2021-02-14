@@ -87,6 +87,7 @@ export const ChartData3d: React.FC<Props> = ({index, chartType}) => {
       <button className="calculate"
         onClick={() => {
           if (selectData === 'extrmum') {
+            if (Object.keys(extremums).length === 0) return alert('Extremums ещё не расчитаны')
             const values = Object.values(extremums).map(item => item[typeValue][extrmum].value)
             const maxValue = Math.max.apply(null, values)
             const minValue = Math.min.apply(null, values)
@@ -111,7 +112,7 @@ export const ChartData3d: React.FC<Props> = ({index, chartType}) => {
     </div>
     <div className="chard-3d-result">
       <Chart3D title={chartType} type='scatter3d' mode='text+markers' width={1024} height={1024}
-        data={[chart3dData.positionData]} conlors={chart3dData.colorsValues}
+        data={[chart3dData.positionData]} conlors={chart3dData.colorsValues} hoverinfo='text'
       />
       <div className="color-scale">
         {colorScale.map(i => <div className="color-scale-item" key={i.toString()}>

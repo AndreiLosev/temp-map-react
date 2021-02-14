@@ -234,9 +234,9 @@ export const getChart3dData = (
 ) => {
   const points = pointsPosition.text
   const values = points.map(point => extremum[point][param][mode].value)
-  const pointsAndValues = points.map(point => `${extremum[point][param][mode].value}`)
+  const pointsAndValues = points.map(point => `${extremum[point][param][mode].value}`) 
   const colorsValuesMap = temperature2color(colorsArr, minValue , maxValue)
-  const positionData = {...pointsPosition, text: pointsAndValues}
+  const positionData = {...pointsPosition, text: pointsAndValues, hovertext: points}
   const colorsValues = points.map((_, i) => findColorsFromValue(colorsValuesMap, values[i]))
   return {positionData, colorsValues, colorsValuesMap}
 }
@@ -259,7 +259,7 @@ export const getChart3dDataFromTime = (
   const maxValue = Math.max.apply(null, values)
   const minValue = Math.min.apply(null, values)
   const colorsValuesMap = temperature2color(colorsArr, minValue , maxValue)
-  const positionData = {...pointsPosition, text: values.map(i => i.toString())}
+  const positionData = {...pointsPosition, text: values.map(i => i.toString()), hovertext: points}
   const colorsValues = points.map((_, i) => findColorsFromValue(colorsValuesMap, values[i]))
   return {positionData, colorsValues, colorsValuesMap}
 } 

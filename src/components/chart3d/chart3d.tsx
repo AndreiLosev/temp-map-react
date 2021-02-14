@@ -10,7 +10,9 @@ type Props = {
     y: number[],
     z: number[],
     text: string[],
+    hovertext?: string[],
   }[]
+  hoverinfo?: 'all' | 'text',
   title: string,
   conlors?: string[]
   type: Plotly.PlotType,
@@ -34,11 +36,12 @@ type Props = {
   
 }
 
-export const Chart3D: React.FC<Props> = ({data, title, type, mode, width, height, conlors}) => {
+export const Chart3D: React.FC<Props> = ({data, title, type, mode, width, height, conlors, hoverinfo='all'}) => {
   const traces: Plotly.Data[] = data.map(i => ({
       ...i,
       type: type,
       mode: mode,
+      hoverinfo: hoverinfo,
       marker: {
         color: conlors ? conlors : i.x.map(() => '#4cca8c'),
         opacity: 0.80,
