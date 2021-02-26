@@ -100,7 +100,7 @@ export const getExtremun = (
     const keys = Array.from(data.keys())
     const start = getStartPoint(period.start, keys)
     const step = keys[1] - keys[0]
-    let extremum = findByMainData(data, keys[0])[param]
+    let extremum = findByMainData(data, start)[param]
     let extremumKey = start
     for (let i = start; i <= period.end; i += step) {
       const current = findByMainData(data, i)[param]
