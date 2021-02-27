@@ -20,7 +20,7 @@ export const ChartData3d: React.FC<Props> = ({index, chartType}) => {
   const typeState = chartType === 'Температура' ? 'temp3dCharts' : 'hum3dCharts'
   const typeValue = chartType === 'Температура' ? 'temperature' : 'humidity'
   const datTimeinput = React.useRef<HTMLInputElement>(null)
-  const {dataСube, extremums} = useSelector((state: AppState) => state.tableData)
+  const {dataСube, extremums, room, door} = useSelector((state: AppState) => state.tableData)
   const {extrmum, selectData, chart3dData, time} = useSelector((state: AppState) => state[typeState].charts3D[index])
   const {period, mainData, filesMetaData} = useSelector((state: AppState) => state.loadingPage)
   const [timeS, setTimeS] = React.useState('')
@@ -113,6 +113,7 @@ export const ChartData3d: React.FC<Props> = ({index, chartType}) => {
     <div className="chard-3d-result">
       <Chart3D title={chartType} type='scatter3d' mode='text+markers' width={1024} height={1024}
         data={[chart3dData.positionData]} conlors={chart3dData.colorsValues} hoverinfo='text'
+        room = {room} door={door}
       />
       <div className="color-scale">
         {colorScale.map(i => <div className="color-scale-item" key={i.toString()}>

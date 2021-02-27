@@ -264,3 +264,50 @@ export const getChart3dDataFromTime = (
   return {positionData, colorsValues, colorsValuesMap}
 } 
 
+export const creataeRoom = (long: number, width: number, height: number) => {
+  const ceiling = {
+    x: [0, 0, width, width, 0],
+    y: [0, long, long, 0, 0],
+    z: [0, 0, 0, 0, 0],
+  }
+  const floor = {
+    x: [0, 0, width, width, 0],
+    y: [0, long, long, 0, 0],
+    z: [height, height, height, height, height],
+  }
+  const angles = [
+    { x: [0, 0], y: [0, 0], z: [0, height] },
+    { x: [0, 0], y: [long, long], z: [0, height] },
+    { x: [width, width], y: [long, long], z: [0, height] },
+    { x: [width, width], y: [0, 0], z: [0, height] },
+  ]
+  return { ceiling, floor, angles }
+}
+
+export const createDoor = (cord: {x1: number, y1: number, z1: number, x2: number, y2: number, z2: number}) => {
+  const edge = {
+    x: [cord.x1, cord.x1, cord.x2, cord.x2],
+    y: [cord.y1, cord.y1, cord.y2, cord.y2], 
+    z: [cord.z1, cord.z2, cord.z2, cord.z1],
+  }
+  const hatching = {
+    x: [] as number[],
+    y: [] as number[],
+    z: [] as number[],
+  }
+  const len = 25
+  const delta = Math.round((cord.z2 - cord.z1) / len) 
+  for (let i = 0; i < len - 1; i++) {
+    hatching.z.push(i * delta)
+    if (i % 2 === 0) {
+      hatching.x.push(cord.x1)
+      hatching.y.push(cord.y1)
+    } else {
+      hatching.x.push(cord.x2)
+      hatching.y.push(cord.y2)
+    }
+    
+  } 
+  return { edge, hatching }
+}
+

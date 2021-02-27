@@ -12,6 +12,8 @@ export class TableDataActionT {
   static SET_PERIOD = 'SET_PERIOD' as const 
   static CALCULATE = 'CALCULATE' as const
   static SET_POINTS_IN_SPACE = 'SET_POINTS_IN_SPACE' as const 
+  static SET_ROOM = 'SET_ROOM' as const
+  static SET_DOOR = 'SET_DOOR' as const
 }
 
 type TableDataType = {
@@ -39,6 +41,12 @@ export class TableDataAction {
   
   static createSetPointsInSpace = (dataСube: {[point: string]: {x: number, y: number, z: number}}) =>
     ({ type: TableDataActionT.SET_POINTS_IN_SPACE, pyload: dataСube })
+
+  static createSetRoom = (value: { long: number, width: number, height: number }) =>
+    ({ type: TableDataActionT.SET_ROOM, pyload: value })
+  
+  static createSetDoor = (value: { x1: number, y1: number, z1: number, x2: number, y2: number, z2: number }) =>
+    ({ type: TableDataActionT.SET_DOOR, pyload: value })
 
   static createCalculate = (
     mainData: MainData, period: {start: number, end: number}, pseudonyms: {[point: string]: string}
@@ -117,6 +125,8 @@ type Action =
   | ReturnType<typeof TableDataAction.createAbsoluteExtrmum>
   | ReturnType<typeof TableDataAction.createSetPeriod>
   | ReturnType<typeof TableDataAction.createSetPointsInSpace>
+  | ReturnType<typeof TableDataAction.createSetRoom>
+  | ReturnType<typeof TableDataAction.createSetDoor>
 
 export type Extremums = {[point: string]: {
   temperature: {
@@ -160,6 +170,8 @@ const initState = {
   },
   loading: false,
   dataСube: {} as {[point: string]: {x: number, y: number, z: number}},
+  room: { long: 10, width: 10, height: 10 },
+  door: { x1: 0, y1: 0, z1: 0, x2: 0, y2: 12, z2: 21 },
 }
 
 type tableDataState = typeof initState
@@ -176,6 +188,10 @@ export const dateTableReduser: Reducer<tableDataState, Action> = (state=initStat
       return {...state, absExtremum: action.pyload}
     case TableDataActionT.SET_POINTS_IN_SPACE:
       return {...state, dataСube: action.pyload}
+    case TableDataActionT.SET_ROOM:
+      return {...state, room: action.pyload}
+    case TableDataActionT.SET_DOOR:
+      return {...state, door: action.pyload}
     default:
       return state
   }
