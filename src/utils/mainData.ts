@@ -295,9 +295,9 @@ export const createDoor = (cord: {x1: number, y1: number, z1: number, x2: number
     y: [] as number[],
     z: [] as number[],
   }
-  const len = 25
-  const delta = Math.round((cord.z2 - cord.z1) / len) 
-  for (let i = 0; i < len - 1; i++) {
+  const delta = 0.25
+  const len = Math.floor((cord.z2 - cord.z1) / delta) 
+  for (let i = 0; i < len; i++) {
     hatching.z.push(i * delta)
     if (i % 2 === 0) {
       hatching.x.push(cord.x1)
@@ -306,8 +306,7 @@ export const createDoor = (cord: {x1: number, y1: number, z1: number, x2: number
       hatching.x.push(cord.x2)
       hatching.y.push(cord.y2)
     }
-    
-  } 
+  }
   return { edge, hatching }
 }
 

@@ -170,7 +170,7 @@ const initState = {
   },
   loading: false,
   dataСube: {} as {[point: string]: {x: number, y: number, z: number}},
-  room: { long: 10, width: 10, height: 10 },
+  room: { long: 20, width: 20, height: 25 },
   door: { x1: 0, y1: 0, z1: 0, x2: 0, y2: 12, z2: 21 },
 }
 

@@ -58,13 +58,17 @@ export const PointsInSpace = () => {
     if (result)
       dispatch(TableDataAction.createSetDoor({...door, [prop]: parseInt(result[0])}))
   }
+  console.log(door)
   return <div className="points-in-space">
-    <ExportToCSV csvFrom={() => JSON.stringify(dataCube)} fileName={'savePoints.json'} enable={true} />
+    <ExportToCSV csvFrom={() => JSON.stringify({dataCube, room, door})} fileName={'savePoints.json'} enable={true} />
     <input type="file" onChange={async e => {
       const file = e.target.files
       if (file) {
         const result = await loadFile(file[0])
-        dispatch(TableDataAction.createSetPointsInSpace((JSON.parse(result[1]))))
+        const {dataCube, room, door} = JSON.parse(result[1])
+        dispatch(TableDataAction.createSetPointsInSpace(dataCube))
+        dispatch(TableDataAction.createSetDoor(door))
+        dispatch(TableDataAction.createSetRoom(room))
       }
     }}/>
     {filesMetaData.map(i => <div key={i.fileName} className="data-Cube-item">
