@@ -69,7 +69,7 @@ export const chartReduser: Reducer<ChaetState, Action> = (state=initState, actio
     case chartActionT.SET_STEP:
       return {...state, charts: state.charts.map((item, i) => {
         if (i === action.pyload.index) 
-          return {...item, step: action.pyload.step > 5 ? action.pyload.step : 5}
+          return {...item, step: action.pyload.step > 1 ? action.pyload.step : 1}
         return item
       })}
     case chartActionT.UPDATE_POINTS:
